@@ -2,9 +2,9 @@
   "name": "camagru",
   "version": "1.0.0",
   "description": "Instagram-like application",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon ../src/server.js",
     "watch": "browser-sync start --config config/bs-config.js & npm start"
   },
   "dependencies": {

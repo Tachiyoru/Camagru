@@ -4,8 +4,10 @@ WORKDIR /usr/src/app
 
 VOLUME /usr/src
 
-COPY . .
+COPY config/package.json ./
 
 RUN npm install
 
-EXPOSE 3000
+COPY . .
+
+WORKDIR /usr/src/app

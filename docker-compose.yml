@@ -7,6 +7,7 @@ services:
     volumes:
       - ./public:/usr/src/app/public
       - ./src:/usr/src/app/src
+      - ./config:/usr/src/app/config
     env_file:
       - .env
     command: npm run watch

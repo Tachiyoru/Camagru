@@ -13,11 +13,11 @@ const app = express();
 const port = 3000;
 const path = require('path');
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/src', express.static(path.join(__dirname, 'src')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+app.use('/src', express.static(path.join(__dirname, 'src')));
 app.use(cors());
 app.use(bodyParser.json());
 
