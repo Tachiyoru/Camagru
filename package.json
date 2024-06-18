@@ -5,8 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "serve": "browser-sync start --config bs-config.js & npm start"
-
+    "watch": "browser-sync start --config config/bs-config.js & npm start"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
@@ -15,6 +14,7 @@
     "firebase": "^10.12.2"
   },
   "devDependencies": {
+    "browser-sync": "^3.0.2",
     "nodemon": "^3.1.3"
   }
 }
