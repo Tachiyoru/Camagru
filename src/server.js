@@ -1,39 +1,42 @@
-const express = require('express');
-const firebase = require('firebase/app');
-require('firebase/database');
-require('firebase/auth');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-
-require('dotenv').config();
+const http = require('http');
 const fs = require('fs');
-JSON.parse(fs.readFileSync('config/firebase_credentials.json', 'utf8'));
-
-const app = express();
-const port = 3000;
 const path = require('path');
 
-app.use(express.static(path.join(__dirname, '../public')));
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-app.use('/src', express.static(path.join(__dirname, 'src')));
-app.use(cors());
-app.use(bodyParser.json());
+// Fonction pour gérer les requêtes
+const requestHandler = (req, res) => {
+  const url = req.url;
 
-// Configuration Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyDR7qOz9llvvh6ui1f8f7RC-e8M64zB9gE",
-    authDomain: "camagru-f29e5.firebaseapp.com",
-    databaseURL: "https://camagru-f29e5-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "camagru-f29e5",
-    storageBucket: "camagru-f29e5.appspot.com",
-    messagingSenderId: "65788784839",
-    appId: "1:65788784839:web:d15b5a7e73048b31894ee2"
-  };
+  if (url === '/') {
+    // Serve index.html
+    fs.readFile(path.join(__dirname, '../public/index.html'), (err, data) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal Server Error');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+  } else if (url.match(/\.css$/)) {
+    // Serve CSS files
+    fs.readFile(path.join(__dirname, '../public', url), (err, data) => {
+      if (err) {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/css' });
+      res.end(data);
+    });
+  } else {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('Not Found');
+  }
+};
 
-firebase.initializeApp(firebaseConfig);
+const server = http.createServer(requestHandler);
+const PORT = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}/`);
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
