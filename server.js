@@ -5,6 +5,10 @@ require('firebase/auth');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
+require('dotenv').config();
+const fs = require('fs');
+JSON.parse(fs.readFileSync('config/firebase_credentials.json', 'utf8'));
+
 const app = express();
 const port = 3000;
 const path = require('path');
