@@ -1,6 +1,7 @@
 services:
-  web:
+  app:
     build: .
+    container_name: camagru
     ports:
       - "3000:3000"
       - "3001:3001"
@@ -10,4 +11,13 @@ services:
       - ./config:/usr/src/app/config
     env_file:
       - .env
+    # depends_on:
+    #   - mongo_db
     command: npm run watch
+
+  # mongo_db:
+  #   container_name: mongo_db
+  #   image: mongo:latest
+  #   restart: always
+    # volumes:
+    #   - ./data:/data/db
