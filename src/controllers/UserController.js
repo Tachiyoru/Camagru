@@ -67,6 +67,35 @@ const create = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  try {
+    const { username_or_email, password } = req.body;
+    const user = await User.findOne({
+      $or: [{ username: username_or_email }, { email: username_or_email }],
+    });
+    if (!user) {
+      res.writeHead(401, { "Content-Type": "text/plain" });
+      res.end("Authentication failed");
+      return;
+    }
+    const isPasswordCorrect = verifyPassword(
+      password,
+      user.salt,
+      user.password
+    );
+    if (isPasswordCorrect) {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(user));
+    } else {
+      res.writeHead(401, { "Content-Type": "text/plain" });
+      res.end("Authentication failed");
+    }
+  } catch (err) {
+    res.writeHead(500, { "Content-Type": "text/plain" });
+    res.end("Internal Server Error");
+  }
+};
+
 const update = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -116,7 +145,7 @@ const createtest = async (req, res) => {
 module.exports = {
   index,
   show,
-  createtest,
+  login,
   create,
   update,
   destroy,

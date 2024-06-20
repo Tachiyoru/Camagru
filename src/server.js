@@ -31,14 +31,24 @@ const requestHandler = (req, res) => {
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(data);
     });
-  } else if (url.match(/\.css$/)) {
-    fs.readFile(path.join(__dirname, '../public', url), (err, data) => {
+  } else if (url === '/homepage') {
+    fs.readFile(path.join(__dirname, '../public/Homepage.html'), (err, data) => {
       if (err) {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('Not Found');
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal Server Error');
         return;
       }
-      res.writeHead(200, { 'Content-Type': 'text/css' });
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(data);
+    });
+  } else if (url === '/loading') {
+    fs.readFile(path.join(__dirname, '../public/gallery.css'), (err, data) => {
+      if (err) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Internal Server Error');
+        return;
+      }
+      res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(data);
     });
   } else {
