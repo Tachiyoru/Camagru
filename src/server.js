@@ -1,7 +1,6 @@
 const http = require('http');
 const fs = require('fs');
 const mongoose = require('mongoose')
-const User = require('./models/User');
 const router = require('./routes');
 require('dotenv').config();
 
