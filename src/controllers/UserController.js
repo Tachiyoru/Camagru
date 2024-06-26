@@ -52,6 +52,14 @@ const create = async (req, res) => {
       password: new_mdp.hash,
       salt: new_mdp.salt,
     });
+    const user2 = await User.findOne({
+      $or: [{ username: user.username }, { email: user.email }],
+    });
+    if (user2) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Username or Email already exists" }));
+      return;
+    }
     user.save();
     console.log(user, "user created successfully!");
     res.writeHead(201, { "Content-Type": "application/json" });

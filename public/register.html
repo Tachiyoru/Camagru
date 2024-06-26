@@ -24,25 +24,10 @@
           <button type="submit">Register</button>
         </form>
       </section>
-
-      <section id="login-section">
-        <h2>Login</h2>
-        <form id="login-form" action="/login" method="post">
-          <label for="username_or_email">Username or Email:</label>
-          <input
-            type="text"
-            id="username_or_email"
-            name="username_or_email"
-            required
-          /><br />
-          <label for="password">Password:</label>
-          <input type="password" id="password" name="password" required /><br />
-          <button type="submit" id="login-button">Log In</button>
-        </form>
-      </section>
+      <div id="to-login">
+        <a href="login">Already have an account? Login here.</a>
+      </div>
     </main>
-
-    <!-- Écran de chargement -->
 
       <div id="loading-screen">
         <div class="loading-content">
@@ -61,6 +46,17 @@
           </svg>
         </div>
       </div>
-    <script src="js/scripts.js"></script>
+
+
+      <div id="error-popup">
+        <div class="popup-content">
+          <span id="close-popup">&times;</span>
+          <img src="images/giphy.webp" alt="error-popup-image" width="384" height="480" frameborder="0" class="giphy-embed" allowfullscreen></img>
+      
+          <p>Your logs are incorrect.</p>
+        </div>
+      </div>
+
+    <script src="js/register.js"></script>
   </body>
 </html>

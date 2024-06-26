@@ -43,7 +43,7 @@ const router = async (req, res) => {
   } else if (path.match(/^\/users\/\w+$/) && method === "delete") {
     req.params = { id: path.split("/")[2] };
     await UserController.destroy(req, res);
-  } else if (path === "/login" && method === "post") {
+  } else if (path === "/log-in" && method === "post") {
     let body = "";
     req.on("data", (chunk) => {
       body += chunk.toString();

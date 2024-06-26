@@ -22,7 +22,20 @@ const requestHandler = (req, res) => {
   const url = req.url;
 
   if (url === "/") {
-    fs.readFile(path.join(__dirname, "../public/index.html"), (err, data) => {
+    fs.readFile(
+      path.join(__dirname, "../public/register.html"),
+      (err, data) => {
+        if (err) {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("Internal Server Error");
+          return;
+        }
+        res.writeHead(200, { "Content-Type": "text/html" });
+        res.end(data);
+      }
+    );
+  } else if (url === "/login") {
+    fs.readFile(path.join(__dirname, "../public/login.html"), (err, data) => {
       if (err) {
         res.writeHead(500, { "Content-Type": "text/plain" });
         res.end("Internal Server Error");
@@ -32,6 +45,16 @@ const requestHandler = (req, res) => {
       res.end(data);
     });
   } else if (url.match(/\.css$/)) {
+    fs.readFile(path.join(__dirname, "../public", url), (err, data) => {
+      if (err) {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Not Found");
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "text/css" });
+      res.end(data);
+    });
+  } else if (url.match(/\.webp$/)) {
     fs.readFile(path.join(__dirname, "../public", url), (err, data) => {
       if (err) {
         res.writeHead(404, { "Content-Type": "text/plain" });
@@ -64,16 +87,6 @@ const requestHandler = (req, res) => {
         res.end(data);
       }
     );
-  } else if (url === "/loading") {
-    fs.readFile(path.join(__dirname, "../public/gallery.css"), (err, data) => {
-      if (err) {
-        res.writeHead(500, { "Content-Type": "text/plain" });
-        res.end("Internal Server Error");
-        return;
-      }
-      res.writeHead(200, { "Content-Type": "text/html" });
-      res.end(data);
-    });
   } else {
     router(req, res);
   }
