@@ -30,7 +30,10 @@ header {
   text-align: center;
 }
 
-h1,
+h1{
+  margin: 0;
+}
+
 h2 {
   margin: 0;
 }
@@ -134,4 +137,4 @@ button {
   cursor: pointer;
   font-size: 1.5em;
   color: red;
-} */
+} 
