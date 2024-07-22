@@ -78,15 +78,20 @@ const router = async (req, res) => {
         );
       }
     });
-  } else if (path.match(/^\/users\/\w+$/) && method === "patch") {
-    req.params = { id: path.split("/")[2] };
+  } else if (path === "/change" && method === "patch") {
     let body = "";
     req.on("data", (chunk) => {
       body += chunk.toString();
     });
     req.on("end", async () => {
-      req.body = JSON.parse(body);
-      await UserController.update(req, res);
+      const cookies = parseCookies(req);
+      const token = cookies.token;
+      req.body = parseFormData(body);
+      if (token) {
+        const user = verifyToken(token);
+        if (user && user.user.confirmed === true)
+          await UserController.update(user, req, res);
+      }
     });
   } else if (path.match(/^\/users\/\w+$/) && method === "delete") {
     req.params = { id: path.split("/")[2] };

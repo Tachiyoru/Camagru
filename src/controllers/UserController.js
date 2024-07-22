@@ -31,7 +31,6 @@ function hashPassword(password) {
   const hash = crypto
     .pbkdf2Sync(password, salt, 1000, 64, "sha512")
     .toString("hex");
-
   return {
     salt: salt,
     hash: hash,
@@ -97,15 +96,18 @@ const login = async (req, res) => {
   }
 };
 
-const update = async (req, res) => {
+const update = async (user, req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    // user.username = req.body.username;
-    // user.email = req.body.email;
-    // user.password = req.body.password;
-    user.save();
-    res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(user));
+    const user2 = await User.findOne(user.username);
+    if (req.body.new_username) user2.username = req.body.new_username;
+    if (req.body.new_email) user2.email = req.body.new_email;
+    if (req.body.new_password) {
+      const new_mdp = hashPassword(req.body.new_password);
+      user2.password = new_mdp.hash;
+      user2.salt = new_mdp.salt;
+    }
+    await user2.save();
+    res.writeHead(401, { "Content-Type": "text/plain" });
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
     res.end("Internal Server Error");
@@ -135,7 +137,7 @@ const confirmEmail = async (res, token) => {
 };
 
 const resetpwd = async (res, email) => {
-  const user = await User.findOne({ email: email});
+  const user = await User.findOne({ email: email });
   user.confirmationToken = generateConfirmationToken();
   user.save();
   await resetor(email, user.confirmationToken);
@@ -191,5 +193,5 @@ module.exports = {
   checktoken,
   create,
   update,
-  destroy
+  destroy,
 };

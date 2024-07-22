@@ -16,11 +16,43 @@
       <div>
           <h1>TU ES BIEN LOG BRAVO</h1>
       </div>
+      <form id="change-form" class="change-form">
+        <button type="submit" id="change-button">change</button>
+      </form>
       <form id="logout-form" class="logout-form">
         <button type="submit" id="logout-button">SIGN OUT</button>
       </form>
     </main>
 
+    <div id="change-modal" class="modal">
+      <div class="modal-content">
+        <span id="close-modal" class="close-button">&times;</span>
+        <h3>Change one or more info</h3>
+        <form id="update-form" class="update-form">
+          <div class="input-group" >
+            <input type="text" id="mew_username" name="mew_username" placeholder="new username" />
+            <input type="email" id="new_email" name="new_email" placeholder="new email"/>
+            <input type="password" id="new_password" name="new_password" placeholder="new password"/>
+          </div>
+          <button type="submit" id="update-button">Update</button>
+        </form>
+      </div>
+    </div>
+    <div id="password-modal" class="modal2" style="display: none;">
+      <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h3>Confirm Changes</h3>
+        <form id="password-form">
+          <div class="input-group">
+            <input type="password" id="current_password" name="current_password" placeholder="Current password" required />
+          </div>
+            <button type="submit" id="confirm-button">Confirm</button>
+        </form>
+      </div>
+    </div>
+
+
     <script src="js/logout.js"></script>
+    <script src="js/change.js"></script>
   </body>
 </html>
