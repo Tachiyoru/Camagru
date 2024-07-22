@@ -1,0 +1,239 @@
+/* styles.css */
+
+:root {
+  --black: #000000;
+  --blue-ribbon: #0069ec;
+  --dodger-blue: #25a3ff;
+  --mine-shaft: #333333;
+  --scorpion: #565656;
+  --torch-red: #ff0033;
+  --white: #ffffff;
+  --violet: #7804e6;
+  --background: linear-gradient(135deg, #6e8efb, #a777e3);
+}
+/* Styles généraux */
+
+body {
+  font-family: "Open Sans", sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+h2 {
+  background-color: var(--violet);
+  color: white;
+  padding: 20px;
+  position: absolute;
+  top: 0;
+  left: 2px;
+  border-radius: 10px;
+}
+
+/* tout les truc de log / register */
+
+
+
+.register-form {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+#register-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+#register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+}
+
+.login-form {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+#login-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+#login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 100%;
+}
+
+.input-group {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+label {
+  display: none;
+}
+
+input {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+#login-button {
+  width: 100%;
+  padding: 15px;
+  background: black;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+#logout-button {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgb(245, 0, 0);
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.for-register {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.got-login {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  color: rgb(222, 41, 41);
+}
+
+.forgot-password {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  color: rgb(222, 41, 41);
+}
+
+h1 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Styles pour l'écran de chargement */
+#loading-screen {
+  display: none;
+  position: fixed;
+  top: 50;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 2em;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 1;
+}
+
+#loading-screen.active {
+  opacity: 1;
+  display: flex;
+  top: 0;
+}
+
+.loading-content {
+  text-align: center;
+  margin-top: 120px;
+}
+
+.loading-text {
+  margin-bottom: -150px;
+}
+
+#svg-spinner {
+  width: 400px;
+  height: 250px;
+  position: relative;
+  animation: rotate 1.2s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#error-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  color: black;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+}
+
+#error-popup.active {
+  display: block;
+}
+
+.popup-content {
+  position: relative;
+  text-align: center;
+}
+
+#close-popup {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  cursor: pointer;
+  font-size: 1.5em;
+  color: red;
+}
