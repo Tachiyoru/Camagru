@@ -98,6 +98,14 @@ const login = async (req, res) => {
 
 const update = async (user, req, res) => {
   try {
+    const isPasswordCorrect = await verifyPassword(
+      req.body.current_password,
+      user.user.salt,
+      user.user.password
+    );
+    if (!isPasswordCorrect) {
+      throw new Error("Invalid password");
+    }
     const user2 = await User.findOne(user.username);
     if (req.body.new_username) user2.username = req.body.new_username;
     if (req.body.new_email) user2.email = req.body.new_email;
@@ -107,10 +115,10 @@ const update = async (user, req, res) => {
       user2.salt = new_mdp.salt;
     }
     await user2.save();
+    console.log("user updated successfully!");
     res.writeHead(401, { "Content-Type": "text/plain" });
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
-    res.end("Internal Server Error");
   }
 };
 

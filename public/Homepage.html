@@ -26,27 +26,27 @@
 
     <div id="change-modal" class="modal">
       <div class="modal-content">
-        <span id="close-modal" class="close-button">&times;</span>
-        <h3>Change one or more info</h3>
-        <form id="update-form" class="update-form">
-          <div class="input-group" >
-            <input type="text" id="mew_username" name="mew_username" placeholder="new username" />
-            <input type="email" id="new_email" name="new_email" placeholder="new email"/>
-            <input type="password" id="new_password" name="new_password" placeholder="new password"/>
+        <span class="close-button">&times;</span>
+        <form id="update-form">
+          <h3>Update your information</h3>
+          <div class="form-group">
+            <input type="text" id="new_username" name="new_username" placeholder="New Username">
+            <input type="email" id="new_email" name="new_email" placeholder="New Email">
+            <input type="password" id="new_password" name="new_password" placeholder="New Password">
           </div>
           <button type="submit" id="update-button">Update</button>
         </form>
       </div>
     </div>
-    <div id="password-modal" class="modal2" style="display: none;">
+    
+    <!-- Modal pour confirmer avec le mot de passe actuel -->
+    <div id="password-modal" class="modal2">
       <div class="modal-content">
         <span class="close-button">&times;</span>
-        <h3>Confirm Changes</h3>
         <form id="password-form">
-          <div class="input-group">
-            <input type="password" id="current_password" name="current_password" placeholder="Current password" required />
-          </div>
-            <button type="submit" id="confirm-button">Confirm</button>
+          <h3>Confirm with your current password</h3>
+          <input type="password" id="current_password" name="current_password" placeholder="Current Password">
+          <button type="submit">Confirm</button>
         </form>
       </div>
     </div>

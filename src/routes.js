@@ -78,7 +78,7 @@ const router = async (req, res) => {
         );
       }
     });
-  } else if (path === "/change" && method === "patch") {
+  } else if (path === "/update" && method === "patch") {
     let body = "";
     req.on("data", (chunk) => {
       body += chunk.toString();
@@ -89,8 +89,14 @@ const router = async (req, res) => {
       req.body = parseFormData(body);
       if (token) {
         const user = verifyToken(token);
-        if (user && user.user.confirmed === true)
+        if (user && user.user.confirmed === true){
           await UserController.update(user, req, res);
+          res.writeHead(201, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "User registered successfully" }));
+        }else{
+          res.writeHead(401, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ message: "User not confirmed" }));
+        }
       }
     });
   } else if (path.match(/^\/users\/\w+$/) && method === "delete") {
