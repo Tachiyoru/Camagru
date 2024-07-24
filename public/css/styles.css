@@ -33,6 +33,31 @@ h2 {
   border-radius: 10px;
 }
 
+.feed-container {
+  width: 80%;
+  height: 70%;
+  overflow-y: scroll;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  margin-top: 50px;
+}
+
+.feed {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.feed img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 5px;
+}
+
 /* tout les truc de log / register */
 .register-form {
   background: white;
@@ -228,13 +253,14 @@ form button {
     display: flex;
     justify-content: space-between;
   }
-  
   form .form-group input {
     flex: 1 1 30%; /* Chaque input prend environ 1/3 de la largeur du conteneur */
-  }
-
+  }  
   form .form-group input:last-child {
     margin-right: 0; /* Supprime la marge droite pour le dernier input */
+  }
+  .gallery {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 

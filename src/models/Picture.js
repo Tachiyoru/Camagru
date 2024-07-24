@@ -10,7 +10,23 @@ const pictureSchema = new Schema({
   authorEmail: {
     type: String,
     required: true,
+  },
+  path: {
+    type: String,
+    required: true,
     unique: true
+  },
+  like: {
+    type: Number,
+    default: 0
+  },
+  likedBy: {
+    type: Array,
+    default: []
+  },
+  Comments: {
+    type: Array,
+    default: []
   },
   createdAt: {
     type: Date,

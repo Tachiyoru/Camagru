@@ -8,10 +8,8 @@ const index = async (req, res) => {
     const users = await User.find({});
     console.log(users, "users");
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(users));
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
-    res.end("Internal Server Error");
   }
 };
 
@@ -19,10 +17,8 @@ const show = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(user));
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
-    res.end("Internal Server Error");
   }
 };
 
@@ -127,7 +123,6 @@ const destroy = async (req, res) => {
     const user = await User.findById(req.params.id);
     user.delete();
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify(user));
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
     res.end("Internal Server Error");
@@ -171,6 +166,7 @@ const checktoken = async (token) => {
   }
   return user;
 };
+
 // test function
 // const createtest = async (req, res) => {
 //   try {

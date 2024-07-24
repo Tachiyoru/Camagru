@@ -8,13 +8,13 @@
   </head>
   <body>
     <header>
-          <a href="http://localhost:3001/homepage">
-      <h2>Camagru</h2>
-    </a>
+      <a href="http://localhost:3001/homepage">
+        <h2>Camagru</h2>
+      </a>
     </header>
     <main>
-      <div>
-          <h1>TU ES BIEN LOG BRAVO</h1>
+      <div id="feed-container">
+        <div id="feed" class="feed"></div>
       </div>
       <form id="change-form" class="change-form">
         <button type="submit" id="change-button">change</button>
@@ -30,28 +30,47 @@
         <form id="update-form">
           <h3>Update your information</h3>
           <div class="form-group">
-            <input type="text" id="new_username" name="new_username" placeholder="New Username">
-            <input type="email" id="new_email" name="new_email" placeholder="New Email">
-            <input type="password" id="new_password" name="new_password" placeholder="New Password">
+            <input
+              type="text"
+              id="new_username"
+              name="new_username"
+              placeholder="New Username"
+            />
+            <input
+              type="email"
+              id="new_email"
+              name="new_email"
+              placeholder="New Email"
+            />
+            <input
+              type="password"
+              id="new_password"
+              name="new_password"
+              placeholder="New Password"
+            />
           </div>
           <button type="submit" id="update-button">Update</button>
         </form>
       </div>
     </div>
-    
-    <!-- Modal pour confirmer avec le mot de passe actuel -->
+
     <div id="password-modal" class="modal2">
       <div class="modal-content">
         <span class="close-button">&times;</span>
         <form id="password-form">
           <h3>Confirm with your current password</h3>
-          <input type="password" id="current_password" name="current_password" placeholder="Current Password">
+          <input
+            type="password"
+            id="current_password"
+            name="current_password"
+            placeholder="Current Password"
+          />
           <button type="submit">Confirm</button>
         </form>
       </div>
     </div>
 
-
+    <script src="js/gallery.js"></script>
     <script src="js/logout.js"></script>
     <script src="js/change.js"></script>
   </body>

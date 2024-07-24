@@ -2,7 +2,9 @@ const url = require("url");
 const fs = require("fs");
 const path2 = require("path");
 const UserController = require("./controllers/UserController");
+const PictureController = require("./controllers/PictureController");
 const jwt = require("jsonwebtoken");
+
 
 const router = async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
@@ -133,6 +135,7 @@ const router = async (req, res) => {
   } else if (path === "/homepage" && method === "get") {
     const cookies = parseCookies(req);
     const token = cookies.token;
+    // PictureController.createtest(req, res);
     if (token) {
       const user = verifyToken(token);
       if (user && user.user.confirmed === false) {
@@ -254,10 +257,17 @@ const router = async (req, res) => {
         } catch (err) {}
       });
     }
+  } else if (path === "/pictures" && method === "get") {
+    const pics = await PictureController.getAllPictures(req, res);
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(pics));
+  } else if (path === "/picture" && method === "post") {
   } else {
     res.writeHead(302, { Location: "/login" });
     res.end();
   }
 };
+
+// router.get("/pictures", PictureController.getAllPictures);
 
 module.exports = router;
