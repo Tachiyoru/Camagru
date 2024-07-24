@@ -60,22 +60,24 @@ const getPaginatedPictures = async (page, limit) => {
 };
 
 const getPictureDetails = async (req, res, pictureId) => {
-  try{
+  try {
     const picture = await Picture.findById(pictureId);
     if (!picture) {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ message: "Picture not found" }));
       return;
     }
-    const comments = await Comment.find({ pictureId: pictureId });
+    let comments = picture.comments;
+    if (!comments) {
+      comments = [];
+    }
     res.writeHead(200, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ picture, comments }));
-
+    console.log("picture");
+    return {picture, comments};
   } catch (err) {
     res.writeHead(500, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
-
 };
 // const createtest = async (req, res) => {
 //   try {

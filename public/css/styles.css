@@ -57,6 +57,37 @@ h2 {
   cursor: pointer;
 }
 
+/* Styles pour la page picture */
+
+/* #picture-detail-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+#picture-detail {
+  max-width: 70vw; 
+  max-height: 80vh;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#comments-container {
+  max-width: 30vw;
+}
+
+#comments-list {
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.comment {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+} */
+
 /* Styles pour la fenêtre modale d'image */
 .picModal {
   display: none;

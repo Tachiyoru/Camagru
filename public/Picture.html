@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Camagru</title>
-    <link rel="stylesheet" href="css/styles.css" />
-  </head>
-  <body>
-    <header>
-      <a href="http://localhost:3001/homepage">
-        <h2>Camagru</h2>
-      </a>
-    </header>
-    <main>
-      <div id="picture-detail-container">
-        <img id="picture-detail" src="" alt="Picture Detail">
-        <div id="comments-container">
-            <h2>Comments</h2>
-            <div id="comments-list"></div>
-        </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Camagru</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <a href="http://localhost:3001/homepage">
+      <h2>Camagru</h2>
+    </a>
+  </header>
+  <main>
+    <div id="picture-detail-container">
+      <img id="picture-detail" src="{{pictureUrl}}" alt="Picture Detail" />
+      <div id="comments-container">
+        <h2>Comments</h2>
+        <div id="comments-list">{{commentsHtml}}</div>
+      </div>
     </div>
-    </main>
-  </body>
+  </main>
+</body>
 </html>

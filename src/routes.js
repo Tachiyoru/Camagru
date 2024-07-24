@@ -5,7 +5,6 @@ const UserController = require("./controllers/UserController");
 const PictureController = require("./controllers/PictureController");
 const jwt = require("jsonwebtoken");
 
-
 const router = async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
   const path = parsedUrl.pathname;
@@ -91,11 +90,11 @@ const router = async (req, res) => {
       req.body = parseFormData(body);
       if (token) {
         const user = verifyToken(token);
-        if (user && user.user.confirmed === true){
+        if (user && user.user.confirmed === true) {
           await UserController.update(user, req, res);
           res.writeHead(201, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ message: "User registered successfully" }));
-        }else{
+        } else {
           res.writeHead(401, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ message: "User not confirmed" }));
         }
@@ -265,18 +264,45 @@ const router = async (req, res) => {
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(pics));
   } else if (path === "/picture" && method === "post") {
-
-    
   } else if (path.match(/^\/picture-details$/) && method === "get") {
     const pictureId = parsedUrl.query.id;
-  
     if (!pictureId) {
       res.writeHead(400, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ error: "Missing picture ID" }));
       return;
     }
-  
-    const picture = await PictureController.getPictureDetails(req, res, pictureId);
+    fs.readFile(
+      path2.join(__dirname, "../public/Picture.html"),
+      async (err, data) => {
+        if (err) {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("Internal Server Error");
+          return;
+        }
+        try {
+          const picture = await PictureController.getPictureDetails(
+            req,
+            res,
+            pictureId
+          );
+          console.log(picture);
+          const pictureHtml = data
+            .toString()
+            .replace("{{pictureUrl}}", `/images/${picture.pictureName}`)
+            .replace(
+              "{{commentsHtml}}",
+              picture.comments
+                .map((comment) => `<div class="comment">${comment.text}</div>`)
+                .join("")
+            );
+          res.writeHead(200, { "Content-Type": "text/html" });
+          res.end();
+        } catch (err) {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("Internal Server Error");
+        }
+      }
+    );
   } else {
     res.writeHead(302, { Location: "/login" });
     res.end();

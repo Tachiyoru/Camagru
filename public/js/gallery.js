@@ -23,8 +23,8 @@ document.addEventListener("DOMContentLoaded", function () {
       imgElement.alt = image.pictureName;
       imgElement.classList.add("thumbnail");
       imgElement.onclick = () => {
-        console.log("clicked", image);
-        window.location.href = `/picture-details?id=${imgElement._id}`;
+        const imageId = image._id;
+        window.location.href = `/picture-details?id=${imageId}`;
       };
       gallery.appendChild(imgElement);
     });
