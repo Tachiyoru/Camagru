@@ -258,10 +258,25 @@ const router = async (req, res) => {
       });
     }
   } else if (path === "/pictures" && method === "get") {
-    const pics = await PictureController.getAllPictures(req, res);
+    const parsedUrl = url.parse(req.url, true);
+    const page = parseInt(parsedUrl.query.page) || 1;
+    const limit = 5;
+    const pics = await PictureController.getPaginatedPictures(page, limit);
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(pics));
   } else if (path === "/picture" && method === "post") {
+
+    
+  } else if (path.match(/^\/picture-details$/) && method === "get") {
+    const pictureId = parsedUrl.query.id;
+  
+    if (!pictureId) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Missing picture ID" }));
+      return;
+    }
+  
+    const picture = await PictureController.getPictureDetails(req, res, pictureId);
   } else {
     res.writeHead(302, { Location: "/login" });
     res.end();

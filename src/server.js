@@ -83,6 +83,17 @@ const requestHandler = (req, res) => {
       res.writeHead(200, { "Content-Type": "application/javascript" });
       res.end(data);
     });
+  } else if (url.match(/\.images$/)) {
+    const imagePath = path2.join(__dirname, "../images", path.replace("/images/", ""));
+    fs.readFile(imagePath, (err, data) => {
+      if (err) {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Not Found");
+        return;
+      }
+      res.writeHead(200, { "Content-Type": "image/jpeg" });
+      res.end(data);
+    });
   } else {
     router(req, res);
   }

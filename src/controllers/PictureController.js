@@ -23,7 +23,7 @@ const createPicture = async (req, res) => {
     res.writeHead(201);
   } catch (err) {
     console.log("in create pic : ", err);
-    res.writeHead(500)
+    res.writeHead(500);
     JSON.stringify({ message: "Internal Server Error" });
   }
 };
@@ -40,31 +40,55 @@ const getPictureById = async (req, res) => {
   } catch (err) {
     res.writeHead(500).json({ message: "Internal Server Error" });
   }
-};  
+};
 
 const getAllPictures = async (req, res) => {
   try {
     const pictures = await Picture.find();
-    return (pictures);
+    return pictures;
   } catch (err) {
-    res.writeHead(500)
+    res.writeHead(500);
     res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
 };
 
+const getPaginatedPictures = async (page, limit) => {
+  const skip = (page - 1) * limit;
+  const total = await Picture.countDocuments();
+  const images = await Picture.find().skip(skip).limit(parseInt(limit));
+  return { images, total };
+};
 
+const getPictureDetails = async (req, res, pictureId) => {
+  try{
+    const picture = await Picture.findById(pictureId);
+    if (!picture) {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Picture not found" }));
+      return;
+    }
+    const comments = await Comment.find({ pictureId: pictureId });
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ picture, comments }));
+
+  } catch (err) {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Internal Server Error" }));
+  }
+
+};
 // const createtest = async (req, res) => {
 //   try {
 //     let picture = new Picture({
-//         pictureName: "a",
+//         pictureName: "e",
 //         authorEmail: "shanley@hotmail.fr",
-//         path: "/uploads/a.jpg",
+//         path: "/uploads/e.jpg",
 //     });
 //     picture.save();
 //     let picture2 = new Picture({
-//         pictureName: "b",
+//         pictureName: "f",
 //         authorEmail: "shanley@hotmail.fr",
-//         path: "/uploads/b.jpg",
+//         path: "/uploads/f.jpg",
 //     });
 //     picture2.save();
 //     let picture3 = new Picture({
@@ -92,6 +116,8 @@ module.exports = {
   createPicture,
   getPictureById,
   getAllPictures,
+  getPaginatedPictures,
+  getPictureDetails,
   upload,
-//   createtest,
+  // createtest,
 };
