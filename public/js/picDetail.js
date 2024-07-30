@@ -14,13 +14,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error('Picture not found');
                 return;
             }
-
             const pictureDetail = document.getElementById('picture-detail');
             pictureDetail.src = `/images/${data.picture.pictureName}`;
-
             const commentsList = document.getElementById('comments-list');
             commentsList.innerHTML = ''; // Clear previous comments
-            
             data.comments.forEach(comment => {
                 const commentDiv = document.createElement('div');
                 commentDiv.classList.add('comment');

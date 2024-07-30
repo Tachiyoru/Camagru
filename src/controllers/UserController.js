@@ -3,6 +3,8 @@ const crypto = require("crypto");
 const validator = require("../components/validator");
 const resetor = require("../components/resetor");
 
+//faire un niveau de securite minimum pour les mdps
+
 const index = async (req, res) => {
   try {
     const users = await User.find({});
@@ -73,7 +75,6 @@ const login = async (req, res) => {
     });
     if (!user) {
       res.writeHead(401, { "Content-Type": "text/plain" });
-      res.end("Authentication failed");
       return;
     }
     const isPasswordCorrect = verifyPassword(
@@ -88,7 +89,6 @@ const login = async (req, res) => {
     }
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
-    res.end("Internal Server Error");
   }
 };
 
@@ -110,9 +110,10 @@ const update = async (user, req, res) => {
       user2.password = new_mdp.hash;
       user2.salt = new_mdp.salt;
     }
+    if (req.body.myCheckbox === "on") user2.notification = true;
+    else user2.notification = false;
     await user2.save();
-    console.log("user updated successfully!");
-    res.writeHead(401, { "Content-Type": "text/plain" });
+    return user2;
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
   }

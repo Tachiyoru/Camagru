@@ -59,7 +59,7 @@ h2 {
 
 /* Styles pour la page picture */
 
-/* #picture-detail-container {
+#picture-detail-container {
   display: flex;
   align-items: center;
   gap: 20px;
@@ -86,7 +86,7 @@ h2 {
   margin-bottom: 10px;
   border-bottom: 1px solid #ddd;
   padding-bottom: 5px;
-} */
+}
 
 /* Styles pour la fenêtre modale d'image */
 .picModal {
@@ -295,6 +295,10 @@ h1 {
   font-size: 14px;
 }
 
+.checkbox-container {
+  color: white;
+  display: flex;
+}
 /* Styles pour les modals de modif d'info*/
 .modal {
   display: none;

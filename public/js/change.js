@@ -2,11 +2,13 @@ function checkFormFields() {
   const username = document.getElementById("new_username").value.trim();
   const email = document.getElementById("new_email").value.trim();
   const password = document.getElementById("new_password").value.trim();
+  const notif = document.getElementById("myCheckbox").checked;
 
   document.getElementById("update-button").disabled = !(
     username ||
     email ||
-    password
+    password ||
+    notif
   );
 }
 

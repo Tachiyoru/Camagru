@@ -67,12 +67,12 @@ const getPictureDetails = async (req, res, pictureId) => {
       res.end(JSON.stringify({ message: "Picture not found" }));
       return;
     }
-    let comments = picture.comments;
+    let comments = picture.Comments;
     if (!comments) {
       comments = [];
     }
+    console.log(comments);
     res.writeHead(200, { "Content-Type": "application/json" });
-    console.log("picture");
     return {picture, comments};
   } catch (err) {
     res.writeHead(500, { "Content-Type": "application/json" });

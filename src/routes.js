@@ -91,8 +91,11 @@ const router = async (req, res) => {
       if (token) {
         const user = verifyToken(token);
         if (user && user.user.confirmed === true) {
-          await UserController.update(user, req, res);
-          res.writeHead(201, { "Content-Type": "application/json" });
+          const user2 = await UserController.update(user, req, res);
+          const token = generateToken(user2);
+          res.setHeader("Set-Cookie", `token=; HttpOnly; Path=/`);
+          res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/`);
+          res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ message: "User registered successfully" }));
         } else {
           res.writeHead(401, { "Content-Type": "application/json" });
@@ -159,8 +162,22 @@ const router = async (req, res) => {
               res.end("Internal Server Error");
               return;
             }
+            console.log(user.user);
+            const updatedData = data.toString().replace(
+              '<script src="js/gallery.js"></script>',
+              `<script>
+                const notif = {
+                  notification: ${user.user.notification}
+                };
+                      document.addEventListener("DOMContentLoaded", function () {
+        if (notif.notification)
+          document.getElementById("myCheckbox").checked = true;
+      });
+              </script>
+              <script src="js/gallery.js"></script>`
+            );
             res.writeHead(200, { "Content-Type": "text/html" });
-            res.end(data);
+            res.end(updatedData);
           }
         );
       } else {
@@ -176,8 +193,8 @@ const router = async (req, res) => {
     console.log("token =", token);
     try {
       await UserController.confirmEmail(res, token);
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.end("Email confirmed successfully");
+      res.writeHead(302, { Location: "/login" });
+      res.end();
     } catch {
       res.writeHead(400, { "Content-Type": "text/plain" });
       res.end("Invalid token");
@@ -288,15 +305,23 @@ const router = async (req, res) => {
           console.log(picture);
           const pictureHtml = data
             .toString()
-            .replace("{{pictureUrl}}", `/images/${picture.pictureName}`)
+            .replace(
+              "{{pictureUrl}}",
+              `/uploads/${picture.picture.pictureName}.jpg`
+            )
+            .replace(
+              "{{likesHtml}}",
+              `${picture.picture.like}`
+            )
             .replace(
               "{{commentsHtml}}",
               picture.comments
-                .map((comment) => `<div class="comment">${comment.text}</div>`)
+                .map((comment) => `<div class="comment">${comment}</div>`)
                 .join("")
             );
+
           res.writeHead(200, { "Content-Type": "text/html" });
-          res.end();
+          res.end(pictureHtml);
         } catch (err) {
           res.writeHead(500, { "Content-Type": "text/plain" });
           res.end("Internal Server Error");
@@ -308,7 +333,5 @@ const router = async (req, res) => {
     res.end();
   }
 };
-
-// router.get("/pictures", PictureController.getAllPictures);
 
 module.exports = router;

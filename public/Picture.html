@@ -16,8 +16,14 @@
     <div id="picture-detail-container">
       <img id="picture-detail" src="{{pictureUrl}}" alt="Picture Detail" />
       <div id="comments-container">
-        <h2>Comments</h2>
-        <div id="comments-list">{{commentsHtml}}</div>
+        <h3>like</h3>
+        <div id="like">115 {{likesHtml}}</div>
+        <h3>Comments</h3>
+        <div id="comments-list">
+          <!-- faire css -->
+          <input type="text" id="comment" name="comment" placeholder="New comment" required />
+          {{commentsHtml}}
+        </div>
       </div>
     </div>
   </main>
