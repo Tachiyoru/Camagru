@@ -297,37 +297,87 @@ const router = async (req, res) => {
           return;
         }
         try {
-          const picture = await PictureController.getPictureDetails(
-            req,
-            res,
-            pictureId
-          );
-          console.log(picture);
-          const pictureHtml = data
-            .toString()
-            .replace(
-              "{{pictureUrl}}",
-              `/uploads/${picture.picture.pictureName}.jpg`
-            )
-            .replace(
-              "{{likesHtml}}",
-              `${picture.picture.like}`
-            )
-            .replace(
-              "{{commentsHtml}}",
-              picture.comments
-                .map((comment) => `<div class="comment">${comment}</div>`)
-                .join("")
+          const cookies = parseCookies(req);
+          const token = cookies.token;
+          if (token) {
+            const user = verifyToken(token);
+            console.log("user", user);
+            const picture = await PictureController.getPictureDetails(
+              req,
+              res,
+              pictureId
             );
-
-          res.writeHead(200, { "Content-Type": "text/html" });
-          res.end(pictureHtml);
+            console.log("token");
+            const check = picture.picture.likedBy.includes(user.username);
+            console.log("check", check, user.username);
+            const pictureHtml = data
+              .toString()
+              .replace(
+                "{{pictureUrl}}",
+                `/uploads/${picture.picture.pictureName}.jpg`
+              )
+              .replace("{{likesHtml}}", `${picture.picture.like}`)
+              .replace(
+                "<script></script>",
+                `<script>
+                const liked = ${picture.picture.likedBy.includes(user.username)};
+                      document.addEventListener("DOMContentLoaded", function () {
+        if (liked)
+          document.getElementById("like-checkbox").checked = true;
+      });
+              </script>
+              <script src="js/gallery.js"></script>`
+              )
+              .replace(
+                "{{commentsHtml}}",
+                picture.comments
+                  .map((comment) => `<div class="comment">${comment}</div>`)
+                  .join("")
+              );
+              // console.log("picture.comments", pictureHtml);
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.end(pictureHtml);
+          }
         } catch (err) {
           res.writeHead(500, { "Content-Type": "text/plain" });
           res.end("Internal Server Error");
         }
       }
     );
+  } else if (
+    path.match(/^\/like\/\w+$/) &&
+    (method === "post" || method === "delete")
+  ) {
+    const pictureId = path.split("/")[2];
+    const cookies = parseCookies(req);
+    const token = cookies.token;
+    if (!pictureId) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Missing picture ID" }));
+      return;
+    }
+    if (token) {
+      const user = verifyToken(token);
+      try {
+        PictureController.likePicture(req, res, pictureId, user.user);
+      } catch (err) {
+        res.writeHead(500, { "Content-Type": "text/plain" });
+        res.end("Internal Server Error");
+      }
+    }
+  } else if (path.match(/^\/comment\/\w+$/) && method === "post") {
+    const pictureId = path.split("/")[2];
+    const cookies = parseCookies(req);
+    const token = cookies.token;
+    if (!pictureId) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Missing picture ID" }));
+      return;
+    }
+    if (token) {
+      const user = verifyToken(token);
+      PictureController.comment(req, res, pictureId, user);
+    }
   } else {
     res.writeHead(302, { Location: "/login" });
     res.end();

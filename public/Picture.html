@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Camagru</title>
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
-  <header>
-    <a href="http://localhost:3001/homepage">
-      <h2>Camagru</h2>
-    </a>
-  </header>
-  <main>
-    <div id="picture-detail-container">
-      <img id="picture-detail" src="{{pictureUrl}}" alt="Picture Detail" />
-      <div id="comments-container">
-        <h3>like</h3>
-        <div id="like">115 {{likesHtml}}</div>
-        <h3>Comments</h3>
-        <div id="comments-list">
-          <!-- faire css -->
-          <input type="text" id="comment" name="comment" placeholder="New comment" required />
-          {{commentsHtml}}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Camagru</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <a href="http://localhost:3001/homepage">
+        <h2>Camagru</h2>
+      </a>
+    </header>
+    <main>
+      <div id="picture-detail-container">
+        <img id="picture-detail" src="{{pictureUrl}}" alt="Picture Detail" />
+        <div id="comments-container">
+          <div id="like">
+            <h3>Like {{likesHtml}}</h3>
+            <input type="checkbox" id="like-checkbox" {{checked}} />
+          </div>
+          <h3>Comments</h3>
+          <div id="comments-list">
+            <input
+              type="text"
+              id="new_comment"
+              name="new_comment"
+              placeholder="New comment"
+              required
+            />
+            {{commentsHtml}}
+          </div>
         </div>
       </div>
-    </div>
-  </main>
-</body>
+    </main>
+    <script></script>
+    <script src="js/comments.js"></script>
+  </body>
 </html>
