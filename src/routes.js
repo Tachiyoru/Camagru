@@ -4,6 +4,7 @@ const path2 = require("path");
 const UserController = require("./controllers/UserController");
 const PictureController = require("./controllers/PictureController");
 const jwt = require("jsonwebtoken");
+const { json } = require("stream/consumers");
 
 const router = async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
@@ -162,7 +163,6 @@ const router = async (req, res) => {
               res.end("Internal Server Error");
               return;
             }
-            console.log(user.user);
             const updatedData = data.toString().replace(
               '<script src="js/gallery.js"></script>',
               `<script>
@@ -190,7 +190,6 @@ const router = async (req, res) => {
     }
   } else if (path.match(/^\/confirm\/\w+$/) && method === "get") {
     const token = path.split("/")[2];
-    console.log("token =", token);
     try {
       await UserController.confirmEmail(res, token);
       res.writeHead(302, { Location: "/login" });
@@ -216,7 +215,6 @@ const router = async (req, res) => {
     });
     req.on("end", async () => {
       req.body = parseFormData(body);
-      console.log("req.body", req.body.username_or_email);
       try {
         await UserController.resetpwd(res, req.body.username_or_email);
         if (res.statusCode === 401) {
@@ -250,7 +248,6 @@ const router = async (req, res) => {
       res.end();
     }
   } else if (path === "/setnew-pwd" && method === "post") {
-    console.log("setnew-pwd");
     const cookies = parseCookies(req);
     const token = cookies.token;
     if (token) {
@@ -301,15 +298,12 @@ const router = async (req, res) => {
           const token = cookies.token;
           if (token) {
             const user = verifyToken(token);
-            console.log("user", user);
             const picture = await PictureController.getPictureDetails(
               req,
               res,
               pictureId
             );
-            console.log("token");
-            const check = picture.picture.likedBy.includes(user.username);
-            console.log("check", check, user.username);
+            const check = picture.picture.likedBy.includes(user.user.username);
             const pictureHtml = data
               .toString()
               .replace(
@@ -320,13 +314,14 @@ const router = async (req, res) => {
               .replace(
                 "<script></script>",
                 `<script>
-                const liked = ${picture.picture.likedBy.includes(user.username)};
+                const liked = ${picture.picture.likedBy.includes(
+                  user.user.username
+                )};
                       document.addEventListener("DOMContentLoaded", function () {
         if (liked)
           document.getElementById("like-checkbox").checked = true;
       });
-              </script>
-              <script src="js/gallery.js"></script>`
+              </script>`
               )
               .replace(
                 "{{commentsHtml}}",
@@ -334,7 +329,7 @@ const router = async (req, res) => {
                   .map((comment) => `<div class="comment">${comment}</div>`)
                   .join("")
               );
-              // console.log("picture.comments", pictureHtml);
+            // console.log("picture.comments", pictureHtml);
             res.writeHead(200, { "Content-Type": "text/html" });
             res.end(pictureHtml);
           }
@@ -348,6 +343,7 @@ const router = async (req, res) => {
     path.match(/^\/like\/\w+$/) &&
     (method === "post" || method === "delete")
   ) {
+    console.log("like");
     const pictureId = path.split("/")[2];
     const cookies = parseCookies(req);
     const token = cookies.token;
@@ -359,7 +355,14 @@ const router = async (req, res) => {
     if (token) {
       const user = verifyToken(token);
       try {
-        PictureController.likePicture(req, res, pictureId, user.user);
+        let a = await PictureController.likePicture(
+          req,
+          res,
+          pictureId,
+          user.user
+        );
+        console.log("laaaaaaaaaaaaaaaaaaaa ", a);
+        res.end({location: "/picture-details?id=" + pictureId});
       } catch (err) {
         res.writeHead(500, { "Content-Type": "text/plain" });
         res.end("Internal Server Error");
@@ -376,7 +379,7 @@ const router = async (req, res) => {
     }
     if (token) {
       const user = verifyToken(token);
-      PictureController.comment(req, res, pictureId, user);
+      PictureController.addComment(req, res, pictureId, user);
     }
   } else {
     res.writeHead(302, { Location: "/login" });

@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((data) => {
         const images = data.images;
         const totalPages = Math.ceil(data.total / imagesPerPage);
+        console.log("images", images);
         displayImages(images);
         setupPagination(totalPages);
       })

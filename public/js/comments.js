@@ -11,17 +11,21 @@ document.addEventListener("DOMContentLoaded", () => {
       method: method,
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "no-cache", // Eviter la mise en cache
+        "Pragma": "no-cache"
       },
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
+          console.log("test");
           const likesCount = document.querySelector("#like");
           likesCount.innerHTML = `Like ${
             data.likesHtml
-          } <label for="like-checkbox">Like</label><input type="checkbox" id="like-checkbox" ${
+          } <input type="checkbox" id="like-checkbox" ${
             likeCheckbox.checked ? "checked" : ""
           } />`;
+          // document.getElementById('likes-count').innerText = data.likesHtml;
         } else {
           alert(data.message);
         }

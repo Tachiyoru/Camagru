@@ -72,8 +72,21 @@ h2 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+h4 {
+  color: #ffffff;
+  justify-content: center;
+}
+
 #like{
   color: #ffffff;
+  display: block;
+}
+
+#like-checkbox {
+  position: sticky;
+  display: block;
+  align-items: center;
+  gap: 5px;
 }
 
 #comments-container {

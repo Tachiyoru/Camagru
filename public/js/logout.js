@@ -7,7 +7,6 @@ document.getElementById("logout-form").addEventListener("submit", function (even
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(formData),
     }).then((response) => {
-      console.log("A");
       if (!response.ok) {
         throw new Error("could not logout");
       }
