@@ -82,50 +82,43 @@ const getPictureDetails = async (req, res, pictureId) => {
 };
 
 const likePicture = async (req, res, pictureId, user) => {
-  try {
-    const picture = await Picture.findById(pictureId);
-    console.log(picture);
-    if (!picture) {
-      res.writeHead(404, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Picture not found" }));
-      return;
-    }
-    if (req.method === "POST") {
-      if (picture.likedBy.includes(user.username)) {
-        console.log("like rate");
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(
-          JSON.stringify({ error: "You have already liked this picture" })
-        );
-        return;
-      }
-      console.log("like");
-      picture.like += 1;
-      picture.likedBy.push(user.username);
-    } else if (req.method === "DELETE") {
-      if (!picture.likedBy.includes(user.username)) {
-        console.log("dislike rate");
-        res.writeHead(400, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "You haven't liked this picture" }));
-        return;
-      }
-      console.log("dislike");
-      picture.like -= 1;
-      if (picture.like < 0) picture.like = 0;
-      console.log(picture.likedBy, user.username);
-      picture.likedBy = picture.likedBy.filter(
-        (username) => username !== user.username
-      );
-    }
-    await picture.save();
-    console.log(picture);
-    res.writeHead(200, { "Content-Type": "application/json" });
-    return picture.like;
-  } catch (err) {
-    res.writeHead(500, { "Content-Type": "text/plain" });
-    res.end("Internal Server Error");
-  }
-};
+	try {
+	  const picture = await Picture.findById(pictureId);
+  
+	  if (!picture) {
+		res.writeHead(404, { "Content-Type": "application/json" });
+		res.end(JSON.stringify({ error: "Picture not found" }));
+		return;
+	  }
+  
+	  if (req.method === 'POST') {
+		if (picture.likedBy.includes(user.username)) {
+		  res.writeHead(400, { "Content-Type": "application/json" });
+		  res.end(JSON.stringify({ error: "You have already liked this picture" }));
+		  return;
+		}
+		picture.like += 1;
+		picture.likedBy.push(user.username);
+	  } else if (req.method === 'DELETE') {
+		if (!picture.likedBy.includes(user.username)) {
+		  res.writeHead(400, { "Content-Type": "application/json" });
+		  res.end(JSON.stringify({ error: "You haven't liked this picture" }));
+		  return;
+		}
+		picture.like -= 1;
+		picture.likedBy = picture.likedBy.filter(username => username !== user.username);
+	  }
+  
+	  await picture.save();
+  
+	  res.writeHead(200, { "Content-Type": "application/json" });
+	  return picture.like;
+	} catch (err) {
+	  res.writeHead(500, { "Content-Type": "application/json" });
+	  res.end(JSON.stringify({ error: "Internal Server Error" }));
+	}
+  };
+  
 
 const addComment = async (req, res) => {
   try {

@@ -342,7 +342,6 @@ const router = async (req, res) => {
     path.match(/^\/like\/\w+$/) &&
     (method === "post" || method === "delete")
   ) {
-    console.log("like");
     const pictureId = path.split("/")[2];
     const cookies = parseCookies(req);
     const token = cookies.token;
@@ -361,7 +360,7 @@ const router = async (req, res) => {
           user.user
         );
         console.log("laaaaaaaaaaaaaaaaaaaa ", a);
-        res.end({location: "/picture-details?id=" + pictureId});
+		res.end(JSON.stringify({ success: true, likesHtml: a }));
       } catch (err) {
         res.writeHead(500, { "Content-Type": "text/plain" });
         res.end("Internal Server Error");
