@@ -326,10 +326,9 @@ const router = async (req, res) => {
               .replace(
                 "{{commentsHtml}}",
                 picture.comments
-                  .map((comment) => `<div class="comment">${comment}</div>`)
+                  .map((comment) => `<div class="comment">${comment[0]} : ${comment[1]}</div>`)
                   .join("")
               );
-            // console.log("picture.comments", pictureHtml);
             res.writeHead(200, { "Content-Type": "text/html" });
             res.end(pictureHtml);
           }

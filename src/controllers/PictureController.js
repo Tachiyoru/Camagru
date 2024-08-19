@@ -1,6 +1,8 @@
 const Picture = require("../models/Picture");
 const multer = require("multer");
+const { default: test } = require("node:test");
 const path = require("path");
+const { text } = require("stream/consumers");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -109,6 +111,7 @@ const likePicture = async (req, res, pictureId, user) => {
       }
       console.log("dislike");
       picture.like -= 1;
+      if (picture.like < 0) picture.like = 0;
       console.log(picture.likedBy, user.username);
       picture.likedBy = picture.likedBy.filter(
         (username) => username !== user.username
@@ -117,7 +120,6 @@ const likePicture = async (req, res, pictureId, user) => {
     await picture.save();
     console.log(picture);
     res.writeHead(200, { "Content-Type": "application/json" });
-    // res.end(json.stringify({ success: true, likesHtml: picture.like }));
     return picture.like;
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
@@ -129,21 +131,16 @@ const addComment = async (req, res) => {
   try {
     const { pictureId } = req.params;
     const { text } = req.body;
-    const user = req.user; // Assume req.user contains the authenticated user
-
+    const user = req.user;
     const picture = await Picture.findById(pictureId);
     if (!picture) {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ error: "Picture not found" }));
       return;
     }
-
-    const comment = { author: user.username, text };
-    picture.comments.push(comment);
+    picture.comments.push([user.username, text]);
     await picture.save();
-
     res.writeHead(200, { "Content-Type": "application/json" });
-    // res.end(JSON.stringify({ success: true, author: user.username, text }));
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
     res.end("Internal Server Error");
