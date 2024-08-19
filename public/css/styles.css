@@ -33,6 +33,16 @@ h2 {
   border-radius: 10px;
 }
 
+h5 {
+	background-color: var(--dodger-blue);
+	color: white;
+	padding: 20px;
+	position: absolute;
+	top: 0;
+	right: 2px;
+	border-radius: 10px;
+  }
+
 /* Styles pour la galerie d'images */
 .gallery {
   min-width: 470px;

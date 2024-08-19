@@ -138,7 +138,6 @@ const router = async (req, res) => {
   } else if (path === "/homepage" && method === "get") {
     const cookies = parseCookies(req);
     const token = cookies.token;
-    // PictureController.createtest(req, res);
     if (token) {
       const user = verifyToken(token);
       if (user && user.user.confirmed === false) {
@@ -181,12 +180,22 @@ const router = async (req, res) => {
           }
         );
       } else {
-        res.writeHead(302, { Location: "/login" });
-        res.end("Authentication failed");
+		fs.readFile(
+			path2.join(__dirname, "../public/VisitorHome.html"),
+			(err, data) => {
+			  if (err) {
+				res.writeHead(500, { "Content-Type": "text/plain" });
+				res.end("Internal Server Error");
+				return;
+			  }
+			  res.writeHead(200, { "Content-Type": "text/html" });
+			  res.end(data);
+			}
+		  );
       }
     } else {
-      res.writeHead(302, { Location: "/login" });
-      res.end();
+        res.writeHead(302, { Location: "/login" });
+        res.end("Authentication failed");
     }
   } else if (path.match(/^\/confirm\/\w+$/) && method === "get") {
     const token = path.split("/")[2];
