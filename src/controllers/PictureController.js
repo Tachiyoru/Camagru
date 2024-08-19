@@ -119,21 +119,19 @@ const likePicture = async (req, res, pictureId, user) => {
 	}
   };
   
-
-const addComment = async (req, res) => {
+const addComment = async (req, res, pictureId, user, text) => {
   try {
-    const { pictureId } = req.params;
-    const { text } = req.body;
-    const user = req.user;
     const picture = await Picture.findById(pictureId);
     if (!picture) {
       res.writeHead(404, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ error: "Picture not found" }));
       return;
     }
-    picture.comments.push([user.username, text]);
+	const newComment = { author: user.username, text: text };
+    picture.Comments.push([user.username, text]);
     await picture.save();
     res.writeHead(200, { "Content-Type": "application/json" });
+	return newComment;
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
     res.end("Internal Server Error");

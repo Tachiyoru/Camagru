@@ -326,7 +326,7 @@ const router = async (req, res) => {
               .replace(
                 "{{commentsHtml}}",
                 picture.comments
-                  .map((comment) => `<div class="comment">${comment[0]} : ${comment[1]}</div>`)
+                  .map((comment) => `<div class="comment"><strong>${comment[0]}:</strong> ${comment[1]}</div>`)
                   .join("")
               );
             res.writeHead(200, { "Content-Type": "text/html" });
@@ -367,22 +367,31 @@ const router = async (req, res) => {
       }
     }
   } else if (path.match(/^\/comment\/\w+$/) && method === "post") {
-    const pictureId = path.split("/")[2];
-    const cookies = parseCookies(req);
-    const token = cookies.token;
-    if (!pictureId) {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Missing picture ID" }));
-      return;
-    }
-    if (token) {
-      const user = verifyToken(token);
-      PictureController.addComment(req, res, pictureId, user);
-    }
-  } else {
-    res.writeHead(302, { Location: "/login" });
-    res.end();
-  }
+	  const pictureId = path.split("/")[2];
+	  const cookies = parseCookies(req);
+	  const token = cookies.token;
+	  if (!pictureId) {
+		  res.writeHead(400, { "Content-Type": "application/json" });
+		  res.end(JSON.stringify({ error: "Missing picture ID" }));
+		  return;
+		}
+		if (token) {
+			const user = verifyToken(token);
+			let body = "";
+			req.on("data", (chunk) => {
+			  body += chunk.toString();
+			});
+			req.on("end", async () => {
+			  req.body = JSON.parse(body);
+			  const text = req.body.text;
+			  const newComment = await PictureController.addComment(req, res, pictureId, user.user, text);
+			  res.end(JSON.stringify({ success: true, comment: newComment }));
+			});
+		}
+	} else {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+	}
 };
 
 module.exports = router;
