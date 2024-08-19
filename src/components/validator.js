@@ -9,7 +9,7 @@ async function validator(email, token) {
       pass: process.env.MAIL_PASSWORD,
     },
   });
-  const confirmationLink = `localhost:3001/confirm/${token}`;
+  const confirmationLink = `http://localhost:3001/confirm/${token}`;
   const mailOptions = {
     from: process.env.MAIL_EMAIL,
     to: email,
