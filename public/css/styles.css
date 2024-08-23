@@ -11,6 +11,7 @@
   --violet: #7804e6;
   --background: linear-gradient(135deg, #6e8efb, #a777e3);
 }
+
 /* Styles généraux */
 
 body {
@@ -405,10 +406,10 @@ form button {
     justify-content: space-between;
   }
   form .form-group input {
-    flex: 1 1 30%; /* Chaque input prend environ 1/3 de la largeur du conteneur */
+    flex: 1 1 30%;
   }
   form .form-group input:last-child {
-    margin-right: 0; /* Supprime la marge droite pour le dernier input */
+    margin-right: 0; 
   }
 }
 
@@ -492,4 +493,25 @@ form button {
   cursor: pointer;
   font-size: 1.5em;
   color: red;
+}
+
+/* Styles pour la page de creation d'image */
+
+#container {
+	display: flex;
+}
+#camera {
+	position: relative;
+	border: 2px solid #000;
+}
+#stickers {
+	margin-left: 20px;
+}
+#stickers img {
+	width: 100px;
+	cursor: pointer;
+	margin-bottom: 10px;
+}
+#capture-button {
+	margin-top: 20px;
 }

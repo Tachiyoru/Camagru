@@ -14,4 +14,22 @@
     </header>
     <main>
       <h1>Photo Shoot</h1>
-    </main>
+	  <body>
+		<div id="container">
+			<div id="camera">
+				<video id="video" width="640" height="480" autoplay></video>
+				<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+			</div>
+			<div id="stickers">
+				<h3>Stickers</h3>
+				<img src="stickers/sticker1.png" alt="Sticker 1" draggable="true">
+				<img src="stickers/sticker2.png" alt="Sticker 2" draggable="true">
+				<img src="stickers/sticker3.png" alt="Sticker 3" draggable="true">
+			</div>
+		</div>
+		<button id="capture-button">Capture & Save</button>
+	
+		<script src="js/webcam.js"></script>
+	</body>
+</main>
+</html>

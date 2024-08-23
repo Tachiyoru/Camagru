@@ -286,7 +286,6 @@ const router = async (req, res) => {
     const pics = await PictureController.getPaginatedPictures(page, limit);
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(pics));
-  } else if (path === "/picture" && method === "post") {
   } else if (path.match(/^\/picture-details$/) && method === "get") {
     const pictureId = parsedUrl.query.id;
     if (!pictureId) {
@@ -368,7 +367,6 @@ const router = async (req, res) => {
           pictureId,
           user.user
         );
-        console.log("laaaaaaaaaaaaaaaaaaaa ", a);
 		res.end(JSON.stringify({ success: true, likesHtml: a }));
       } catch (err) {
         res.writeHead(500, { "Content-Type": "text/plain" });
@@ -397,6 +395,54 @@ const router = async (req, res) => {
 			  res.end(JSON.stringify({ success: true, comment: newComment }));
 			});
 		}
+  } else if (path === "/new-pic") {
+    try {
+		const cookies = parseCookies(req);
+		const token = cookies.token;
+		if (token) {
+		  const user = verifyToken(token);
+		  if (user) {
+			fs.readFile(
+			  path2.join(__dirname, "../public/new_pic.html"),
+			  (err, data) => {
+				res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/`);
+				res.writeHead(200, { "Content-Type": "text/html" });
+				res.end(data);
+			  }
+			);
+		  }
+		}
+	  } catch {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+	  }
+  } else if (path === "/save-photo" && method === "post") {
+	const cookies = parseCookies(req);
+	const token = cookies.token;
+	if (token) {
+	  const user = verifyToken(token);
+	  if (user) {
+		let body = "";
+		req.on("data", (chunk) => {
+		  body += chunk.toString();
+		});
+		req.on("end", async () => {
+            const { image } = JSON.parse(body);
+            const base64Data = image.replace(/^data:image\/png;base64,/, '');
+            const fileName = `photo_${Date.now()}.png`;
+
+            fs.writeFile(`photos/${fileName}`, base64Data, 'base64', err => {
+                if (err) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: false, message: 'Failed to save photo' }));
+                } else {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ success: true }));
+                }
+            });
+        });
+	  }
+	}
 	} else {
 		res.writeHead(302, { Location: "/login" });
 		res.end();

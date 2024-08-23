@@ -163,6 +163,7 @@ const resetpwd2 = async (res, token, password) => {
 const checktoken = async (token) => {
   const user = await User.findOne({ confirmationToken: token });
   if (!user) {
+	console.log("User not found");
     throw new Error("User not found");
   }
   return user;
