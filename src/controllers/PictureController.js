@@ -15,14 +15,15 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-const createPicture = async (req, res) => {
+const savePicture = async (user, filename, res) => {
   try {
     const picture = new Picture({
-      authorEmail: req.body.authorEmail,
-      pictureName: req.file.filename,
+      authorEmail: user.email,
+      pictureName: filename,
+	  path: `/uploads/${filename}`,
     });
+	console.log(picture);
     await picture.save();
-    res.writeHead(201);
   } catch (err) {
     console.log("in create pic : ", err);
     res.writeHead(500);
@@ -174,7 +175,7 @@ const addComment = async (req, res, pictureId, user, text) => {
 // };
 
 module.exports = {
-  createPicture,
+  savePicture,
   getPictureById,
   getAllPictures,
   getPaginatedPictures,

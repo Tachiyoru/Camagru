@@ -311,12 +311,13 @@ const router = async (req, res) => {
               res,
               pictureId
             );
+			console.log(picture.picture.pictureName);
             const check = picture.picture.likedBy.includes(user.user.username);
             const pictureHtml = data
               .toString()
               .replace(
                 "{{pictureUrl}}",
-                `/uploads/${picture.picture.pictureName}.jpg`
+                `/uploads/${picture.picture.pictureName}`
               )
               .replace("{{likesHtml}}", `${picture.picture.like}`)
               .replace(
@@ -417,27 +418,31 @@ const router = async (req, res) => {
 		res.end();
 	  }
   } else if (path === "/save-photo" && method === "post") {
+	console.log("here");
 	const cookies = parseCookies(req);
 	const token = cookies.token;
 	if (token) {
-	  const user = verifyToken(token);
-	  if (user) {
-		let body = "";
-		req.on("data", (chunk) => {
-		  body += chunk.toString();
-		});
-		req.on("end", async () => {
-            const { image } = JSON.parse(body);
-            const base64Data = image.replace(/^data:image\/png;base64,/, '');
-            const fileName = `photo_${Date.now()}.png`;
+		const user = verifyToken(token);
+		if (user) {
+			let body = "";
+			req.on("data", (chunk) => {
+				body += chunk.toString();
+			});
+			req.on("end", async () => {
+				const { image } = JSON.parse(body);
+				const base64Data = image.replace(/^data:image\/png;base64,/, '');
+				const fileName = `picture_${Date.now()}.jpg`;
+				const uploadDir = path2.join(__dirname, '../public/uploads');
 
-            fs.writeFile(`photos/${fileName}`, base64Data, 'base64', err => {
-                if (err) {
-                    res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: false, message: 'Failed to save photo' }));
-                } else {
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: true }));
+				fs.writeFile(`${uploadDir}/${fileName}`, base64Data, 'base64', (err) => {
+					if (err) {
+						console.log("error ici");
+						res.writeHead(500, { 'Content-Type': 'application/json' });
+						res.end(JSON.stringify({ success: false, message: err.message }));
+					} else {
+						PictureController.savePicture(user.user, fileName);
+						res.writeHead(200, { 'Content-Type': 'application/json'});
+						res.end(JSON.stringify({ success: true}));
                 }
             });
         });

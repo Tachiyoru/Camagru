@@ -500,18 +500,63 @@ form button {
 #container {
 	display: flex;
 }
+
 #camera {
 	position: relative;
 	border: 2px solid #000;
+	width: 640px;
+	height: 480px;
 }
+
 #stickers {
 	margin-left: 20px;
+	flex-direction: column;
+	margin-left: 20px;
 }
+
 #stickers img {
 	width: 100px;
 	cursor: pointer;
 	margin-bottom: 10px;
 }
+
 #capture-button {
 	margin-top: 20px;
+}
+
+#camera-container {
+	position: relative;
+}
+
+#canvas {
+	pointer-events: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+	display: none;
+}
+
+#webcam-container {
+	position: relative;
+	width: 640px;
+	height: 480px;
+	border: 2px solid #000;
+	margin-bottom: 20px;
+}
+#sticker-container {
+	display: flex;
+	flex-direction: column;
+	margin-right: 20px;
+}
+.sticker {
+	width: 80px;
+	margin-bottom: 10px;
+	cursor: move;
+}
+#capture-button, #save-button {
+	margin-top: 20px;
+	padding: 10px 20px;
+	font-size: 16px;
+	cursor: pointer;
 }
