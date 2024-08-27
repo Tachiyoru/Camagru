@@ -58,7 +58,7 @@ const getAllPictures = async (req, res) => {
 const getPaginatedPictures = async (page, limit) => {
   const skip = (page - 1) * limit;
   const total = await Picture.countDocuments();
-  const images = await Picture.find().skip(skip).limit(parseInt(limit));
+  const images = await Picture.find().skip(skip).limit(parseInt(limit)).sort({ createdAt: -1 });
   return { images, total };
 };
 

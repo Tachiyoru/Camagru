@@ -496,67 +496,72 @@ form button {
 }
 
 /* Styles pour la page de creation d'image */
-
-#container {
-	display: flex;
-}
-
-#camera {
-	position: relative;
-	border: 2px solid #000;
-	width: 640px;
-	height: 480px;
-}
-
-#stickers {
-	margin-left: 20px;
-	flex-direction: column;
-	margin-left: 20px;
-}
-
-#stickers img {
-	width: 100px;
-	cursor: pointer;
-	margin-bottom: 10px;
-}
-
-#capture-button {
-	margin-top: 20px;
-}
-
-#camera-container {
-	position: relative;
-}
-
-#canvas {
-	pointer-events: none;
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 1;
-	display: none;
-}
-
-#webcam-container {
-	position: relative;
-	width: 640px;
-	height: 480px;
-	border: 2px solid #000;
-	margin-bottom: 20px;
-}
-#sticker-container {
-	display: flex;
-	flex-direction: column;
-	margin-right: 20px;
-}
-.sticker {
-	width: 80px;
-	margin-bottom: 10px;
-	cursor: move;
-}
 #capture-button, #save-button {
 	margin-top: 20px;
 	padding: 10px 20px;
 	font-size: 16px;
 	cursor: pointer;
+}
+
+#newPic-container {
+	display: flex;
+	max-height: 480px;
+}
+
+#camera {
+    position: relative;
+    width: 640px;
+    height: 480px;
+    margin: 0 auto;
+}
+
+#video {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#canvas-background,
+#canvas-stickers {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#canvas-background {
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#canvas-stickers {
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: transparent; /* Assure que ce canevas est transparent */
+}
+
+h7 {
+    background-color: var(--dodger-blue);
+    color: white;
+    padding: 10px;
+    position: sticky; /* Position sticky pour que le h7 reste visible au scroll */
+    top: 0; /* Fixe le h7 en haut de son conteneur parent */
+    z-index: 10; /* Assure que le h7 soit au-dessus des autres éléments */
+    border-radius: 10px;
+	justify-content: center;
+}
+
+#stickers {
+    margin-left: 20px;
+    max-height: 480px; /* Limite la hauteur à 480px */
+    overflow-y: auto; /* Active le défilement vertical si nécessaire */
+    display: flex;
+    flex-direction: column;
+}
+
+#stickers img {
+    width: 100px;
+    cursor: pointer;
+    margin-bottom: 10px;
 }

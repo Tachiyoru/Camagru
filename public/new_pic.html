@@ -14,17 +14,19 @@
     </header>
     <main>
       <h1>Photo Shoot</h1>
-	  <body>
-		<div id="container">
-			<div id="camera">
-				<video id="video" width="640" height="480" autoplay></video>
-				<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-			</div>
+	  <div id="newPic-container">
+		<div id="camera">
+			<video id="video" width="640" height="480" autoplay></video>
+			<canvas id="canvas-background" width="640" height="480"></canvas> <!-- Pour la vidéo -->
+			<canvas id="canvas-stickers" width="640" height="480"></canvas> <!-- Pour les stickers -->
+		</div>
 			<div id="stickers">
-				<h3>Stickers</h3>
+				<h7>Stickers</h7>
 				<img src="stickers/sticker1.png" alt="Sticker 1" draggable="true">
 				<img src="stickers/sticker2.png" alt="Sticker 2" draggable="true">
 				<img src="stickers/sticker3.png" alt="Sticker 3" draggable="true">
+				<img src="stickers/sticker4.png" alt="Sticker 4" draggable="true">
+				<img src="stickers/sticker3.png" alt="Sticker 5" draggable="true">
 			</div>
 		</div>
 		<button id="capture-button">Save picture</button>

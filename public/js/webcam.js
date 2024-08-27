@@ -1,15 +1,16 @@
 const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
+const canvasBackground = document.getElementById('canvas-background');
+const canvasStickers = document.getElementById('canvas-stickers');
 const captureButton = document.getElementById('capture-button');
-let context = canvas.getContext('2d');
+const contextBackground = canvasBackground.getContext('2d');
+const contextStickers = canvasStickers.getContext('2d');
 
-let stickers = []; // Array to store stickers' data
+let stickers = [];
 let selectedSticker = null;
 let offsetX = 0;
 let offsetY = 0;
 let isResizing = false;
 
-// Accéder à la webcam
 navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         video.srcObject = stream;
@@ -17,22 +18,27 @@ navigator.mediaDevices.getUserMedia({ video: true })
     .catch(err => console.error("Error accessing webcam: ", err));
 
 video.addEventListener('loadedmetadata', () => {
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    canvasBackground.width = video.videoWidth;
+    canvasBackground.height = video.videoHeight;
+    canvasStickers.width = video.videoWidth;
+    canvasStickers.height = video.videoHeight;
+    updateCanvas();
 });
 
-// Gestion du drag and drop des stickers
 document.querySelectorAll('#stickers img').forEach(img => {
     img.addEventListener('dragstart', event => {
+        console.log("dragstart");	
         event.dataTransfer.setData('text/plain', event.target.src);
     });
 });
 
-canvas.addEventListener('dragover', event => {
+canvasStickers.addEventListener('dragover', event => {
+    console.log("dragover");
     event.preventDefault();
 });
 
-canvas.addEventListener('drop', event => {
+canvasStickers.addEventListener('drop', event => {
+    console.log("drop");
     event.preventDefault();
     const stickerSrc = event.dataTransfer.getData('text/plain');
     const img = new Image();
@@ -46,24 +52,14 @@ canvas.addEventListener('drop', event => {
             height: img.height,
         };
         stickers.push(sticker);
-        drawCanvas(); // Redessine la vidéo et les stickers
+        drawStickers();
     };
 });
 
-// Fonction pour dessiner la vidéo et les stickers sur le canvas
-function drawCanvas() {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    stickers.forEach(sticker => {
-        context.drawImage(sticker.image, sticker.x, sticker.y, sticker.width, sticker.height);
-    });
-}
-
-// Sélectionner un sticker pour le déplacer ou redimensionner
-canvas.addEventListener('mousedown', (event) => {
+canvasStickers.addEventListener('mousedown', (event) => {
+    console.log("mousedown");
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
-
     selectedSticker = null;
     stickers.forEach(sticker => {
         if (mouseX > sticker.x && mouseX < sticker.x + sticker.width &&
@@ -81,8 +77,8 @@ canvas.addEventListener('mousedown', (event) => {
     });
 });
 
-// Déplacer ou redimensionner un sticker
-canvas.addEventListener('mousemove', (event) => {
+canvasStickers.addEventListener('mousemove', (event) => {
+    console.log("mousemove");
     if (selectedSticker) {
         if (isResizing) {
             selectedSticker.width = event.offsetX - selectedSticker.x;
@@ -91,24 +87,45 @@ canvas.addEventListener('mousemove', (event) => {
             selectedSticker.x = event.offsetX - offsetX;
             selectedSticker.y = event.offsetY - offsetY;
         }
-        drawCanvas();
+        drawStickers();
     }
 });
 
-// Relâcher le sticker
-canvas.addEventListener('mouseup', () => {
+canvasStickers.addEventListener('mouseup', () => {
     selectedSticker = null;
     isResizing = false;
 });
 
-// Capturer la photo avec stickers
+function drawBackground() {
+    contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height);
+    contextBackground.drawImage(video, 0, 0, canvasBackground.width, canvasBackground.height);
+}
+
+function drawStickers() {
+    contextStickers.clearRect(0, 0, canvasStickers.width, canvasStickers.height);
+    stickers.forEach(sticker => {
+        contextStickers.drawImage(sticker.image, sticker.x, sticker.y, sticker.width, sticker.height);
+    });
+}
+
+function updateCanvas() {
+    drawBackground();
+    drawStickers();
+}
+
+setInterval(updateCanvas, 100);
+
 captureButton.addEventListener('click', () => {
-    drawCanvas(); // Redessiner les stickers sur le canvas final
-    const imageDataURL = canvas.toDataURL('image/png');
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = canvasBackground.width;
+    finalCanvas.height = canvasBackground.height;
+    const finalContext = finalCanvas.getContext('2d');
+    finalContext.drawImage(canvasBackground, 0, 0);
+    finalContext.drawImage(canvasStickers, 0, 0);
+    const imageDataURL = finalCanvas.toDataURL('image/png');
     savePhoto(imageDataURL);
 });
 
-// Fonction pour sauvegarder la photo sur le serveur
 function savePhoto(imageDataURL) {
     fetch('/save-photo', {
         method: 'POST',
