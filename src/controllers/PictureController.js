@@ -3,6 +3,9 @@ const multer = require("multer");
 const { default: test } = require("node:test");
 const path = require("path");
 const { text } = require("stream/consumers");
+const likor = require("../components/likor");
+const commentator = require("../components/commentator");
+const UserRef = require("../models/User");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -85,21 +88,27 @@ const getPictureDetails = async (req, res, pictureId) => {
 const likePicture = async (req, res, pictureId, user) => {
 	try {
 	  const picture = await Picture.findById(pictureId);
-  
+	  
 	  if (!picture) {
-		res.writeHead(404, { "Content-Type": "application/json" });
-		res.end(JSON.stringify({ error: "Picture not found" }));
-		return;
-	  }
-  
-	  if (req.method === 'POST') {
-		if (picture.likedBy.includes(user.username)) {
-		  res.writeHead(400, { "Content-Type": "application/json" });
-		  res.end(JSON.stringify({ error: "You have already liked this picture" }));
+		  res.writeHead(404, { "Content-Type": "application/json" });
+		  res.end(JSON.stringify({ error: "Picture not found" }));
 		  return;
 		}
+		
+		if (req.method === 'POST') {
+			if (picture.likedBy.includes(user.username)) {
+				res.writeHead(400, { "Content-Type": "application/json" });
+				res.end(JSON.stringify({ error: "You have already liked this picture" }));
+				return;
+			}
+			
+		const user2 = await UserRef.findOne({ email: picture.authorEmail });
+		if (user2.notification) {
+			  await likor(user2.email);
+			}
 		picture.like += 1;
 		picture.likedBy.push(user.username);
+
 	  } else if (req.method === 'DELETE') {
 		if (!picture.likedBy.includes(user.username)) {
 		  res.writeHead(400, { "Content-Type": "application/json" });
@@ -131,6 +140,10 @@ const addComment = async (req, res, pictureId, user, text) => {
 	const newComment = { author: user.username, text: text };
     picture.Comments.push([user.username, text]);
     await picture.save();
+	const user2 = await UserRef.findOne({ email: picture.authorEmail });
+	if (user2.notification) {
+	  await commentator(user2.email);
+	}
     res.writeHead(200, { "Content-Type": "application/json" });
 	return newComment;
   } catch (err) {

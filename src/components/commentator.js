@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-async function validator(email, token) {
+async function commentator(email) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -8,15 +8,12 @@ async function validator(email, token) {
       pass: process.env.MAIL_PASSWORD,
     },
   });
-  const confirmationLink = `http://localhost:3001/confirm/${token}`;
   const mailOptions = {
     from: process.env.MAIL_EMAIL,
     to: email,
-    subject: "Please confirm your email",
+    subject: "Comment Notification",
     html: `<p>Hello,</p>
-    <p>Please confirm your account by clicking the following link:</p>
-    <a href="${confirmationLink}">Confirm Account</a>
-    <p>Thank you!</p>`
+    <p>A user has commented your picture</p>`
   };
   try {
     await transporter.sendMail(mailOptions);
@@ -25,4 +22,4 @@ async function validator(email, token) {
   }
 }
 
-module.exports = validator;
+module.exports = commentator;

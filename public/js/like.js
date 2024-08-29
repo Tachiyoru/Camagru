@@ -45,8 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		<h4>Like ${likesHtml}
 		<input type="checkbox" id="like-checkbox" ${document.getElementById("like-checkbox").checked ? "checked" : ""} /></h4>
 	  `;
-	  attachLikeListener(); // Réattache l'écouteur d'événement après la mise à jour du DOM
+	  attachLikeListener(); 
 	};
   
-	attachLikeListener(); // Attache l'écouteur d'événement lors du chargement initial de la page
+	attachLikeListener(); 
   });
