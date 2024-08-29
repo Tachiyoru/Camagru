@@ -12,9 +12,9 @@ let selectedSticker = null;
 let offsetX = 0;
 let offsetY = 0;
 let isResizing = false;
-let isImageUploaded = false; 
+let isImageUploaded = false; // Nouvelle variable pour vérifier si une image est téléchargée
 
-
+// Accéder à la webcam
 navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         video.srcObject = stream;
@@ -26,22 +26,22 @@ video.addEventListener('loadedmetadata', () => {
     canvasBackground.height = video.videoHeight;
     canvasStickers.width = video.videoWidth;
     canvasStickers.height = video.videoHeight;
-    if (!isImageUploaded) { 
-        drawVideoOnCanvas(); 
+    if (!isImageUploaded) { // N'affiche la vidéo que si aucune image n'est téléchargée
+        drawVideoOnCanvas(); // Commence à dessiner la vidéo en temps réel sur le canvas de fond
     }
 });
 
-
+// Dessiner la vidéo sur le canvas de fond
 function drawVideoOnCanvas() {
-    if (!isImageUploaded) { 
+    if (!isImageUploaded) { // Continue à dessiner la vidéo uniquement si aucune image n'est téléchargée
         contextBackground.drawImage(video, 0, 0, canvasBackground.width, canvasBackground.height);
-        requestAnimationFrame(drawVideoOnCanvas); 
+        requestAnimationFrame(drawVideoOnCanvas); // Continue à dessiner la vidéo en temps réel
     }
 }
 
-
+// Gestion du téléchargement d'image
 uploadButton.addEventListener('click', () => {
-    uploadImageInput.click(); 
+    uploadImageInput.click(); // Déclenche l'input de type file
 });
 
 uploadImageInput.addEventListener('change', event => {
@@ -51,11 +51,11 @@ uploadImageInput.addEventListener('change', event => {
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
-                isImageUploaded = true; 
-                contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height); 
-                contextBackground.drawImage(img, 0, 0, canvasBackground.width, canvasBackground.height); 
-                video.pause(); 
-                video.style.display = 'none'; 
+                isImageUploaded = true; // Marque qu'une image est téléchargée
+                contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height); // Efface le canvas de fond
+                contextBackground.drawImage(img, 0, 0, canvasBackground.width, canvasBackground.height); // Dessine l'image
+                video.pause(); // Arrête la vidéo de la webcam
+                // video.style.display = 'none'; // Masque la vidéo de la webcam
             };
             img.src = e.target.result;
         };
@@ -63,16 +63,16 @@ uploadImageInput.addEventListener('change', event => {
     }
 });
 
-
+// Réinitialiser l'image téléchargée et réafficher la webcam
 function resetToWebcam() {
     isImageUploaded = false;
     contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height);
     video.play();
-    video.style.display = 'block'; 
-    drawVideoOnCanvas(); 
+    video.style.display = 'block'; // Affiche la vidéo de la webcam
+    drawVideoOnCanvas(); // Recommence à dessiner la vidéo
 }
 
-
+// Le reste du code reste inchangé pour gérer le drag-and-drop des stickers
 document.querySelectorAll('#stickers img').forEach(img => {
     img.addEventListener('dragstart', event => {
         event.dataTransfer.setData('text/plain', event.target.src);
@@ -97,7 +97,7 @@ canvasStickers.addEventListener('drop', event => {
             height: img.height,
         };
         stickers.push(sticker);
-        drawStickersOnCanvas(); 
+        drawStickersOnCanvas(); // Redessine les stickers sur le canvas transparent
     };
 });
 
@@ -152,7 +152,7 @@ captureButton.addEventListener('click', () => {
     finalCanvas.height = canvasBackground.height;
     const finalContext = finalCanvas.getContext('2d');
 
-    
+    // Combine l'image de fond et les stickers
     finalContext.drawImage(canvasBackground, 0, 0);
     finalContext.drawImage(canvasStickers, 0, 0);
 
