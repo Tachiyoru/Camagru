@@ -1,7 +1,9 @@
 const video = document.getElementById('video');
 const canvasBackground = document.getElementById('canvas-background');
 const canvasStickers = document.getElementById('canvas-stickers');
+const uploadImageInput = document.getElementById('upload-image');
 const captureButton = document.getElementById('capture-button');
+const uploadButton = document.getElementById('upload-button');
 const contextBackground = canvasBackground.getContext('2d');
 const contextStickers = canvasStickers.getContext('2d');
 
@@ -10,6 +12,8 @@ let selectedSticker = null;
 let offsetX = 0;
 let offsetY = 0;
 let isResizing = false;
+let isImageUploaded = false; 
+
 
 navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
@@ -22,23 +26,64 @@ video.addEventListener('loadedmetadata', () => {
     canvasBackground.height = video.videoHeight;
     canvasStickers.width = video.videoWidth;
     canvasStickers.height = video.videoHeight;
-    updateCanvas();
+    if (!isImageUploaded) { 
+        drawVideoOnCanvas(); 
+    }
 });
+
+
+function drawVideoOnCanvas() {
+    if (!isImageUploaded) { 
+        contextBackground.drawImage(video, 0, 0, canvasBackground.width, canvasBackground.height);
+        requestAnimationFrame(drawVideoOnCanvas); 
+    }
+}
+
+
+uploadButton.addEventListener('click', () => {
+    uploadImageInput.click(); 
+});
+
+uploadImageInput.addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                isImageUploaded = true; 
+                contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height); 
+                contextBackground.drawImage(img, 0, 0, canvasBackground.width, canvasBackground.height); 
+                video.pause(); 
+                video.style.display = 'none'; 
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+
+function resetToWebcam() {
+    isImageUploaded = false;
+    contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height);
+    video.play();
+    video.style.display = 'block'; 
+    drawVideoOnCanvas(); 
+}
+
 
 document.querySelectorAll('#stickers img').forEach(img => {
     img.addEventListener('dragstart', event => {
-        console.log("dragstart");	
         event.dataTransfer.setData('text/plain', event.target.src);
     });
 });
 
 canvasStickers.addEventListener('dragover', event => {
-    console.log("dragover");
     event.preventDefault();
 });
 
 canvasStickers.addEventListener('drop', event => {
-    console.log("drop");
     event.preventDefault();
     const stickerSrc = event.dataTransfer.getData('text/plain');
     const img = new Image();
@@ -52,12 +97,11 @@ canvasStickers.addEventListener('drop', event => {
             height: img.height,
         };
         stickers.push(sticker);
-        drawStickers();
+        drawStickersOnCanvas(); 
     };
 });
 
 canvasStickers.addEventListener('mousedown', (event) => {
-    console.log("mousedown");
     const mouseX = event.offsetX;
     const mouseY = event.offsetY;
     selectedSticker = null;
@@ -67,7 +111,6 @@ canvasStickers.addEventListener('mousedown', (event) => {
             selectedSticker = sticker;
             offsetX = mouseX - sticker.x;
             offsetY = mouseY - sticker.y;
-
             if (mouseX > sticker.x + sticker.width - 10 && mouseY > sticker.y + sticker.height - 10) {
                 isResizing = true;
             } else {
@@ -78,7 +121,6 @@ canvasStickers.addEventListener('mousedown', (event) => {
 });
 
 canvasStickers.addEventListener('mousemove', (event) => {
-    console.log("mousemove");
     if (selectedSticker) {
         if (isResizing) {
             selectedSticker.width = event.offsetX - selectedSticker.x;
@@ -87,7 +129,7 @@ canvasStickers.addEventListener('mousemove', (event) => {
             selectedSticker.x = event.offsetX - offsetX;
             selectedSticker.y = event.offsetY - offsetY;
         }
-        drawStickers();
+        drawStickersOnCanvas();
     }
 });
 
@@ -96,32 +138,24 @@ canvasStickers.addEventListener('mouseup', () => {
     isResizing = false;
 });
 
-function drawBackground() {
-    contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height);
-    contextBackground.drawImage(video, 0, 0, canvasBackground.width, canvasBackground.height);
-}
-
-function drawStickers() {
+function drawStickersOnCanvas() {
     contextStickers.clearRect(0, 0, canvasStickers.width, canvasStickers.height);
     stickers.forEach(sticker => {
         contextStickers.drawImage(sticker.image, sticker.x, sticker.y, sticker.width, sticker.height);
     });
 }
 
-function updateCanvas() {
-    drawBackground();
-    drawStickers();
-}
-
-setInterval(updateCanvas, 100);
-
 captureButton.addEventListener('click', () => {
+    drawStickersOnCanvas();
     const finalCanvas = document.createElement('canvas');
     finalCanvas.width = canvasBackground.width;
     finalCanvas.height = canvasBackground.height;
     const finalContext = finalCanvas.getContext('2d');
+
+    
     finalContext.drawImage(canvasBackground, 0, 0);
     finalContext.drawImage(canvasStickers, 0, 0);
+
     const imageDataURL = finalCanvas.toDataURL('image/png');
     savePhoto(imageDataURL);
 });
