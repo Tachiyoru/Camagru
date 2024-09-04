@@ -6,35 +6,46 @@
     <title>Camagru</title>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
+	<style>
+		body {
+		background-size: 200% 200%;
+	  }
+	  main {
+		width: 120vw;
+	  }
+	</style>
   <body>
     <header>
       <a href="http://localhost:3001/homepage">
         <h2>Camagru</h2>
 	</a>
-</header>
-<main>
-	<h1>Photo Shoot</h1>
-	<div id="newPic-container">
-		<div id="camera">
-			<video id="video" autoplay></video>
-			<canvas id="canvas-background"></canvas> <!-- Pour la vidéo -->
-			<canvas id="canvas-stickers"></canvas> <!-- Pour les stickers -->
+	</header>
+	<main>
+		<h8>Photo Shoot</h8>
+		<div id="newPic-container">
+			<div id="camera" >
+				<video id="video" autoplay></video>
+				<canvas id="canvas-background" ></canvas>
+				<canvas id="canvas-stickers" ></canvas>
+			</div>
+			<div id="stickers">
+				<h7>Stickers</h7>
+				<img src="stickers/sticker1.png" alt="Sticker 1" draggable="true">
+				<img src="stickers/sticker2.png" alt="Sticker 2" draggable="true">
+				<img src="stickers/sticker3.png" alt="Sticker 3" draggable="true">
+				<img src="stickers/sticker4.png" alt="Sticker 4" draggable="true">
+				<img src="stickers/sticker5.png" alt="Sticker 5" draggable="true">
+				<img src="stickers/panda.gif" alt="Sticker 6" draggable="true">
+			</div>
 		</div>
-		<div id="stickers">
-			<h7>Stickers</h7>
-			<img src="stickers/sticker1.png" alt="Sticker 1" draggable="true">
-			<img src="stickers/sticker2.png" alt="Sticker 2" draggable="true">
-			<img src="stickers/sticker3.png" alt="Sticker 3" draggable="true">
-			<img src="stickers/sticker4.png" alt="Sticker 4" draggable="true">
-			<img src="stickers/sticker5.png" alt="Sticker 5" draggable="true">
-			<img src="stickers/panda.gif" alt="Sticker 6" draggable="true">
-		</div>
-		<button id="capture-button">Save picture</button>
-		<input type="file" id="upload-image" accept="image/*" style="display: none;" />
-	</div>
-	<button id="upload-button">Upload a pic</button>
-	
-		<script src="js/webcam.js"></script>
 	</body>
+	<button id="capture-button">Save picture</button>
+	<input type="file" id="upload-image" accept="image/*" style="display: none;" />
+	<button id="upload-button">Upload a pic</button>
+	<form id="logout-form" class="logout-form">
+		<button type="submit" id="logout-button">SIGN OUT</button>
+	</form>
 </main>
+<script src="js/webcam.js"></script>
+<script src="js/logout.js"></script>
 </html>
