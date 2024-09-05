@@ -23,9 +23,9 @@ const savePicture = async (user, filename, res) => {
     const picture = new Picture({
       authorEmail: user.email,
       pictureName: filename,
-	  path: `/uploads/${filename}`,
+      path: `/uploads/${filename}`,
     });
-	console.log(picture);
+    console.log(picture);
     await picture.save();
   } catch (err) {
     console.log("in create pic : ", err);
@@ -86,47 +86,47 @@ const getPictureDetails = async (req, res, pictureId) => {
 };
 
 const likePicture = async (req, res, pictureId, user) => {
-	try {
-	  const picture = await Picture.findById(pictureId);
-	  
-	  if (!picture) {
-		  res.writeHead(404, { "Content-Type": "application/json" });
-		  res.end(JSON.stringify({ error: "Picture not found" }));
-		  return;
-		}
-		
-		if (req.method === 'POST') {
-			if (picture.likedBy.includes(user.username)) {
-				res.writeHead(400, { "Content-Type": "application/json" });
-				res.end(JSON.stringify({ error: "You have already liked this picture" }));
-				return;
-			}
-			
-		const user2 = await UserRef.findOne({ email: picture.authorEmail });
-		if (user2.notification) {
-			  await likor(user2.email);
-			}
-		picture.like += 1;
-		picture.likedBy.push(user.username);
+    try {
+      const picture = await Picture.findById(pictureId);
+      
+      if (!picture) {
+          res.writeHead(404, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "Picture not found" }));
+          return;
+        }
+        
+        if (req.method === 'POST') {
+            if (picture.likedBy.includes(user.username)) {
+                res.writeHead(400, { "Content-Type": "application/json" });
+                res.end(JSON.stringify({ error: "You have already liked this picture" }));
+                return;
+            }
+            
+        const user2 = await UserRef.findOne({ email: picture.authorEmail });
+        if (user2.notification) {
+              await likor(user2.email);
+            }
+        picture.like += 1;
+        picture.likedBy.push(user.username);
 
-	  } else if (req.method === 'DELETE') {
-		if (!picture.likedBy.includes(user.username)) {
-		  res.writeHead(400, { "Content-Type": "application/json" });
-		  res.end(JSON.stringify({ error: "You haven't liked this picture" }));
-		  return;
-		}
-		picture.like -= 1;
-		picture.likedBy = picture.likedBy.filter(username => username !== user.username);
-	  }
+      } else if (req.method === 'DELETE') {
+        if (!picture.likedBy.includes(user.username)) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ error: "You haven't liked this picture" }));
+          return;
+        }
+        picture.like -= 1;
+        picture.likedBy = picture.likedBy.filter(username => username !== user.username);
+      }
   
-	  await picture.save();
+      await picture.save();
   
-	  res.writeHead(200, { "Content-Type": "application/json" });
-	  return picture.like;
-	} catch (err) {
-	  res.writeHead(500, { "Content-Type": "application/json" });
-	  res.end(JSON.stringify({ error: "Internal Server Error" }));
-	}
+      res.writeHead(200, { "Content-Type": "application/json" });
+      return picture.like;
+    } catch (err) {
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Internal Server Error" }));
+    }
   };
   
 const addComment = async (req, res, pictureId, user, text) => {
@@ -137,18 +137,35 @@ const addComment = async (req, res, pictureId, user, text) => {
       res.end(JSON.stringify({ error: "Picture not found" }));
       return;
     }
-	const newComment = { author: user.username, text: text };
+    const newComment = { author: user.username, text: text };
     picture.Comments.push([user.username, text]);
     await picture.save();
-	const user2 = await UserRef.findOne({ email: picture.authorEmail });
-	if (user2.notification) {
-	  await commentator(user2.email);
-	}
+    const user2 = await UserRef.findOne({ email: picture.authorEmail });
+    if (user2.notification) {
+      await commentator(user2.email);
+    }
     res.writeHead(200, { "Content-Type": "application/json" });
-	return newComment;
+    return newComment;
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
     res.end("Internal Server Error");
+  }
+};
+
+const deletePicture = async (req, res, pictureId) => {
+  try {
+    const picture = await Picture.findById(pictureId);
+    if (!picture) {
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Picture not found" }));
+    return;
+    }
+    await picture.remove();
+    res.writeHead(200, { "Content-Type": "application/json" });
+    return 1;
+  } catch (err) {
+    res.writeHead(500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ error: "Internal Server Error" }));
   }
 };
 
@@ -196,5 +213,6 @@ module.exports = {
   upload,
   likePicture,
   addComment,
+  deletePicture,
   // createtest,
 };

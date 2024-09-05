@@ -1,4 +1,3 @@
-envoyer mail de notif en cas like ou de commentaire
-pourvoir mettre un background de base si pas de webcam
-ajouter un gif aux stickers
-affichr les image dans l'homepage de la plus recente a la moins recente
+The user should be able to delete his edited images, but only his, not other users’ creations.
+les stickers ne fonctionnent pas en responsive
+footer
