@@ -7,21 +7,15 @@
     <link rel="stylesheet" href="css/styles.css" />
   </head>
 	<style>
-		body {
-		background-size: 200% 200%;
-	  }
-	  main {
-		width: 120vw;
-	  }
 	</style>
   <body>
     <header>
       <a href="http://localhost:3001/homepage">
         <h2>Camagru</h2>
 	</a>
+	<h0>Photo Shoot</h0>
 	</header>
 	<main>
-		<h8>Photo Shoot</h8>
 		<div id="newPic-container">
 			<div id="camera" >
 				<video id="video" autoplay></video>
@@ -38,14 +32,17 @@
 				<img src="stickers/panda.gif" alt="Sticker 6" draggable="true">
 			</div>
 		</div>
+		<button id="capture-button">Save picture</button>
+		<input type="file" id="upload-image" accept="image/*" style="display: none;" />
+		<button id="upload-button">Upload a pic</button>
+		<form id="logout-form" class="logout-form">
+			<button type="submit" id="logout-button">SIGN OUT</button>
+		</form>
 	</main>
-	<button id="capture-button">Save picture</button>
-	<input type="file" id="upload-image" accept="image/*" style="display: none;" />
-	<button id="upload-button">Upload a pic</button>
-	<form id="logout-form" class="logout-form">
-		<button type="submit" id="logout-button">SIGN OUT</button>
-	</form>
 </body>
 <script src="js/webcam.js"></script>
 <script src="js/logout.js"></script>
+<footer>
+	<p>&copy; 2024 Shanley LEON. All rights reserved.</p>
+  </footer>
 </html>

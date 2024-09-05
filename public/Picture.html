@@ -15,11 +15,11 @@
     <main>
       <div id="picture-detail-container">
         <img id="picture-detail" src="{{pictureUrl}}" alt="Picture Detail" />
+		<div id="like">
+		  <h3>Like {{likesHtml}}
+		  <input type="checkbox" id="like-checkbox" {{checked}} /></h3>
+		</div>
         <div id="comments-container">
-          <div id="like">
-            <h4>Like {{likesHtml}}
-            <input type="checkbox" id="like-checkbox" {{checked}} /></h4>
-          </div>
           <h3>Comments</h3>
           <div id="comments-list">
             <input
@@ -35,8 +35,11 @@
         </div>
       </div>
     </main>
-    <script></script>
+    <!-- <script src="js/deletePic.js"></script> -->
     <script src="js/like.js"></script>
     <script src="js/comments.js"></script>
-  </body>
+</body>
+<footer>
+	<p>&copy; 2024 Shanley LEON. All rights reserved.</p>
+  </footer>
 </html>

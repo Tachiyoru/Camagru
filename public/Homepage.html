@@ -8,23 +8,28 @@
   </head>
   <body>
     <header>
-      <a href="http://localhost:3001/homepage">
+      <!-- <a href="http://localhost:3001/homepage">
         <h2>Camagru</h2>
-      </a>
-    </header>
-    <main>
-      <h0>Gallery</h0>
-      <div class="gallery" id="gallery"></div>
-      <div class="pagination" id="pagination"></div>
-      <form id="change-form" class="change-form">
-        <button type="submit" id="change-button">change</button>
-      </form>
-      <form id="logout-form" class="logout-form">
-        <button type="submit" id="logout-button">SIGN OUT</button>
-      </form>
+      </a> -->
+	  <form id="change-form" class="change-form">
+		<button type="submit" id="change-button">change</button>
+	  </form>
+	  <form id="logout-form" class="logout-form">
+		<button type="submit" id="logout-button">SIGN OUT</button>
+	  </form>
 	  <a href="http://localhost:3001/new-pic" >
 		<h5>New picture</h5>
 	  </a>
+	  <h0>Gallery</h0>
+    </header>
+	<style>
+		main{
+			flex-direction: column;
+		}
+	</style>
+    <main>
+      <div class="gallery" id="gallery"></div>
+      <div class="pagination" id="pagination"></div>
     </main>
 
     <div id="change-modal" class="modal">
@@ -80,4 +85,7 @@
     <script src="js/logout.js"></script>
     <script src="js/change.js"></script>
   </body>
+  <footer>
+	<p>&copy; 2024 Shanley LEON. All rights reserved.</p>
+  </footer>
 </html>

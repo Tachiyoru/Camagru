@@ -14,31 +14,77 @@
 
 /* Styles généraux */
 
-body {
-	font-family: "Open Sans", sans-serif;
+body, html {
 	margin: 0;
+	padding: 0;
+	height: 100%;
 	display: flex;
-	justify-content: center;
-	align-items: center;
+	flex-direction: column;
+	font-family: "Open Sans", sans-serif;
 	background: linear-gradient(to right, #6a11cb, #2575fc);
+  }
+
+  header {
+	background-color: #7961e3;
+	color: white;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	height: 60px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  footer {
+	background-color: #2e2e2f;
+	color: white;
+	position: fixed;
+	bottom: 0;
+	width: 100%; 
+	height: 40px; 
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  main {
+	flex: 1; 
+	margin-top: 60px; 
+	margin-bottom: 40px; 
+	overflow: hidden;
+	overflow-y: auto;
+	padding: 20px;
+	box-sizing: border-box;
+	width: 100%;
+	display: flex;
+	justify-content: center; 
+	align-items: center; 
+	overflow-x: auto;
   }
 
 h2 {
   background-color: var(--violet);
   color: white;
   padding: 10px;
-  position: absolute;
-  top: 0;
-  left: 2px;
   border-radius: 10px;
+  position: fixed;
+  margin: 0;
+  top: 5px;
+  left: 2px;
 }
 
 h5 {
 	background-color: var(--dodger-blue);
 	color: white;
-	padding: 10px;
-	position: absolute;
-	top: 0;
+	padding: 8px;
+	position: fixed;
+	margin: 0;
+	top: 15px;
 	right: 2px;
 	border-radius: 10px;
   }
@@ -55,14 +101,12 @@ h6 {
 
 /* Styles pour la galerie d'images */
 .gallery {
-  min-width: 470px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  min-width: 320px;
   padding-left: 2%;
   padding-right: 2%;
-  margin-top: 150px;
-  top: 10%;
   margin-left: 10px;
   margin-right: 10px;
   background: rgb(217, 143, 234);
@@ -71,20 +115,49 @@ h6 {
 
 .thumbnail {
   width: 100%;
-  height: 100%;
+  height: width;
   max-width: 200px;
   max-height: 200px;
+  min-width: 70px;
+  min-height: 70px;
   object-fit: cover;
   margin: 10px;
   cursor: pointer;
 }
+
+/* Styles pour la pagination */
+.pagination {
+	display: flex;
+	justify-content: center;
+	margin: 20px 0;
+	bottom: 20%;
+  }
+  
+  .pagination button {
+	background-color: #4caf50;
+	border: none;
+	color: white;
+	padding: 10px 20px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+	margin: 4px 2px;
+	cursor: pointer;
+  }
+  
+  .pagination button:disabled {
+	background-color: #a0a0a0;
+	cursor: not-allowed;
+  }
+  
 
 /* Styles pour la page picture */
 
 #picture-detail-container {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 }
 
 #picture-detail {
@@ -94,21 +167,13 @@ h6 {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-h4 {
-  color: #ffffff;
-  justify-content: center;
-}
-
 #like{
   color: #ffffff;
-  display: block;
-}
-
-#like-checkbox {
-  position: sticky;
-  display: block;
+  position: absolute;
+  top: 10%;
+  right: 25%;
+  display: flex;
   align-items: center;
-  gap: 5px;
 }
 
 #comments-container {
@@ -119,6 +184,8 @@ h4 {
   border: 1px solid #ccc;
   padding: 10px;
   background-color: #f9f9f9;
+  max-height: 300px;
+  overflow-y: auto; 
 }
 
 #new_comment{
@@ -132,68 +199,6 @@ h4 {
   padding-bottom: 5px;
 }
 
-/* Styles pour la fenêtre modale d'image */
-.picModal {
-  display: none;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 75%;
-  height: 75%;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.9);
-}
-
-.picModal-content {
-  margin: auto;
-  display: block;
-  width: 80%;
-  max-width: 700px;
-  max-height: 700px;
-}
-
-.close {
-  position: absolute;
-  top: 20px;
-  right: 25px;
-  color: #fff;
-  font-size: 35px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-@media only screen and (max-width: 700px) {
-  .picModal-content {
-    width: 100%;
-  }
-}
-
-/* Styles pour la pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-  bottom: 20%;
-}
-
-.pagination button {
-  background-color: #4caf50;
-  border: none;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-
-.pagination button:disabled {
-  background-color: #a0a0a0;
-  cursor: not-allowed;
-}
 
 /* create */
 
@@ -214,7 +219,7 @@ h4 {
 	position: relative;
 	display: flex;
 	flex-direction: column;
-	top: 100px;
+	top: 10px;
 	left: 5%;
 }
 
@@ -301,7 +306,7 @@ input {
 
 #logout-button {
   position: absolute;
-  top: 15%;
+  bottom: 2px;
   left: 10px;
   background: rgb(245, 0, 0);
   color: white;
@@ -352,16 +357,15 @@ h0 {
   color: #333;
   font-size: 24px;
   text-align: center;
-  position: absolute;
-  top : 7%;
-  left : 44%;
+  position: fixed;
+  top : 15px;
 }
 
 /* Styles généraux pour le bouton change */
 #change-button {
   position: absolute;
   top: 10%;
-  left: 10px;
+  left: 18px;
   background: rgb(105, 218, 127);
   color: white;
   border: none;
@@ -528,20 +532,9 @@ form button {
 }
 
 /* Styles pour la page de creation d'image */
-h8 {
-	position: absolute;
-	top: 10%;
-	left: 50%;
-	color: #333;
-	font-size: 24px;
-	margin-bottom: 20px;
-	text-align: center;
-}
-
 #newPic-container {
 	position: relative;
-	top: 100px;
-	left: 20%;
+	left: 2%;
 	display: flex;
 	align-items: flex-start;
 	max-height: 480px;
@@ -603,13 +596,13 @@ h7 {
 	padding: 10px 20px;
 	font-size: 16px;
 	cursor: pointer;
-	bottom: 10px;
+	bottom: 10%;
 	left: 10px;
 }
 
 #upload-button {
 	position: absolute;
-	bottom: 10px;
+	bottom: 10%;
 	right: 10px;
 	margin-top: 20px;
 	padding: 10px 20px;
@@ -619,14 +612,14 @@ h7 {
 
 #stickers {
 	left: 0;
-    margin-left: 20px;
-    max-height: 300px;
+    margin-left: 2px;
+	height: 90%;
 	width: 150px; 
 	overflow: visible;
     overflow-y: auto; 
     display: flex;
     flex-direction: column;
-	z-index: 10; /* Ensure the stickers are above other content */
+	z-index: 10;
 }
 
 #stickers img {

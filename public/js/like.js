@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	const updateLikesCount = (likesHtml) => {
 	  const likeContainer = document.querySelector("#like");
 	  likeContainer.innerHTML = `
-		<h4>Like ${likesHtml}
-		<input type="checkbox" id="like-checkbox" ${document.getElementById("like-checkbox").checked ? "checked" : ""} /></h4>
+		<h3>Like ${likesHtml}
+		<input type="checkbox" id="like-checkbox" ${document.getElementById("like-checkbox").checked ? "checked" : ""} /></h3>
 	  `;
 	  attachLikeListener(); 
 	};
