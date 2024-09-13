@@ -26,7 +26,6 @@ navigator.mediaDevices.getUserMedia({ video: true })
     });
 
 video.addEventListener('loadedmetadata', () => {
-    console.log('video loaded');
     canvasBackground.width = video.videoWidth;
     canvasBackground.height = video.videoHeight;
     canvasStickers.width = video.videoWidth;
@@ -37,9 +36,7 @@ video.addEventListener('loadedmetadata', () => {
 });
 
 function setCanvasDefaultSize() {
-	console.log('Setting canvas to default size', video.videoWidth, video.videoHeight);
     const container = document.getElementById('newPic-container');
-	console.log('container:', container.offsetWidth, Stickers.offsetWidth);
     const containerWidth = container.offsetWidth - Stickers.offsetWidth;
     const containerHeight = container.offsetHeight;
 
@@ -47,8 +44,6 @@ function setCanvasDefaultSize() {
     canvasBackground.height = containerHeight;
     canvasStickers.width = containerWidth;
     canvasStickers.height = containerHeight;
-
-    console.log('Canvases set to default size:', containerWidth, containerHeight);
 }
 
 

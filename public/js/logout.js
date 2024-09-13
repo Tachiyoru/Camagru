@@ -1,6 +1,5 @@
 document.getElementById("logout-form").addEventListener("submit", function (event) {
     event.preventDefault();
-    console.log("Logout-Form submitted!");
     const formData = new FormData(event.target);
     fetch("/logout", {
       method: "POST",

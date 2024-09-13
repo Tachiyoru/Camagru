@@ -144,6 +144,20 @@ const router = async (req, res) => {
 	  const token = cookies.token;
 	  if (token) {
 		  const user = verifyToken(token);
+		  if (!user) {
+			fs.readFile(
+				path2.join(__dirname, "../public/VisitorHome.html"),
+				(err, data) => {
+				  if (err) {
+					res.writeHead(500, { "Content-Type": "text/plain" });
+					res.end("Internal Server Error");
+					return;
+				  }
+				  res.writeHead(200, { "Content-Type": "text/html" });
+				  res.end(data);
+				}
+			  );
+		  }
 		  if (user && user.user.confirmed === false) {
 			  fs.readFile(
 				  path2.join(__dirname, "../public/confirmation.html"),
@@ -294,16 +308,16 @@ const router = async (req, res) => {
   } else if (path.match(/^\/picture-details$/) && method === "get") {
     const pictureId = parsedUrl.query.id;
     if (!pictureId) {
-      res.writeHead(400, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ error: "Missing picture ID" }));
+		res.writeHead(302, { Location: "/login" });
+		res.end();
       return;
     }
     fs.readFile(
       path2.join(__dirname, "../public/Picture.html"),
       async (err, data) => {
         if (err) {
-          res.writeHead(500, { "Content-Type": "text/plain" });
-          res.end("Internal Server Error");
+		res.writeHead(302, { Location: "/login" });
+		res.end();
           return;
         }
         try {
@@ -316,7 +330,6 @@ const router = async (req, res) => {
               res,
               pictureId
             );
-			console.log(picture.picture.pictureName);
             const check = picture.picture.likedBy.includes(user.user.username);
             let pictureHtml = data
               .toString()
@@ -350,8 +363,8 @@ const router = async (req, res) => {
             res.end(pictureHtml);
           }
         } catch (err) {
-          res.writeHead(500, { "Content-Type": "text/plain" });
-          res.end("Internal Server Error");
+			res.writeHead(302, { Location: "/login" });
+			res.end();
         }
       }
     );
@@ -451,7 +464,6 @@ const router = async (req, res) => {
 
 				fs.writeFile(`${uploadDir}/${fileName}`, base64Data, 'base64', (err) => {
 					if (err) {
-						console.log("error ici");
 						res.writeHead(500, { 'Content-Type': 'application/json' });
 						res.end(JSON.stringify({ success: false, message: err.message }));
 					} else {

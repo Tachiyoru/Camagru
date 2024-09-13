@@ -8,7 +8,6 @@ const resetor = require("../components/resetor");
 const index = async (req, res) => {
   try {
     const users = await User.find({});
-    console.log(users, "users");
     res.writeHead(200, { "Content-Type": "application/json" });
   } catch (err) {
     res.writeHead(500, { "Content-Type": "text/plain" });
@@ -62,7 +61,6 @@ const create = async (req, res) => {
   }
   user.confirmationToken = generateConfirmationToken();
   await user.save();
-  console.log(user, "user created successfully!");
   await validator(user.email, user.confirmationToken);
   return user;
 };
@@ -157,37 +155,15 @@ const resetpwd2 = async (res, token, password) => {
   user.password = new_mdp.hash;
   user.salt = new_mdp.salt;
   user.save();
-  console.log(user, "user updated successfully!");
 };
 
 const checktoken = async (token) => {
   const user = await User.findOne({ confirmationToken: token });
   if (!user) {
-	console.log("User not found");
     throw new Error("User not found");
   }
   return user;
 };
-
-// test function
-// const createtest = async (req, res) => {
-//   try {
-//     let user = new User({
-//       username: "pierre",
-//       email: "req.body.email",
-//       password: "req.body.password",
-
-//     });
-//     user.save();
-//     console.log(user, "user created successfully!");
-//     res.writeHead(201).json(user);
-//     res.end(JSON.stringify(user));
-//   } catch (err) {
-//     console.log(err.message);
-//     res.writeHead(500, { "Content-Type": "text/plain" });
-//     res.end("Internal Server Error");
-//   }
-// };
 
 module.exports = {
   index,

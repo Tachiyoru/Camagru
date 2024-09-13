@@ -27,10 +27,8 @@ const savePicture = async (user, filename, base64Data) => {
       path: `/uploads/${filename}`,
 	  ImageData: base64Data,
     });
-    console.log(picture);
     await picture.save();
   } catch (err) {
-    console.log("in create pic : ", err);
     JSON.stringify({ message: "Internal Server Error" });
   }
 };
@@ -155,7 +153,6 @@ const addComment = async (req, res, pictureId, user, text) => {
 
 const deletePicture = async (req, res, pictureId) => {
 	try {
-		console.log(pictureId);
 		const picture = await Picture.findById(pictureId);
 		if (!picture) {
 			res.writeHead(404, { "Content-Type": "application/json" });
@@ -202,10 +199,8 @@ const createtest = async (req, res) => {
 				ImageData: imageB64,
 			});
 		picture3.save();
-    console.log(picture, "picture created successfully!");
     res.writeHead(201).json(picture);
   } catch (err) {
-    console.log(err.message);
     res.writeHead(500, { "Content-Type": "text/plain" });
     res.end(JSON.stringify({ message: "Internal Server Error" }));
   }
