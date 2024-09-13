@@ -8,7 +8,6 @@ const contextBackground = canvasBackground.getContext('2d');
 const contextStickers = canvasStickers.getContext('2d');
 const Stickers = document.getElementById('stickers');
 
-
 let stickers = [];
 let selectedSticker = null;
 let offsetX = 0;

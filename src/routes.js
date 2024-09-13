@@ -4,7 +4,6 @@ const path2 = require("path");
 const UserController = require("./controllers/UserController");
 const PictureController = require("./controllers/PictureController");
 const jwt = require("jsonwebtoken");
-const { json } = require("stream/consumers");
 
 const router = async (req, res) => {
   const parsedUrl = url.parse(req.url, true);
@@ -81,6 +80,7 @@ const router = async (req, res) => {
       }
     });
   } else if (path === "/update" && method === "patch") {
+	try {
     let body = "";
     req.on("data", (chunk) => {
       body += chunk.toString();
@@ -104,6 +104,10 @@ const router = async (req, res) => {
         }
       }
     });
+    } catch {
+	res.writeHead(302, { Location: "/login" });
+	res.end();
+  }
   } else if (path.match(/^\/users\/\w+$/) && method === "delete") {
     req.params = { id: path.split("/")[2] };
     await UserController.destroy(req, res);
@@ -254,6 +258,7 @@ const router = async (req, res) => {
       res.end();
     }
   } else if (path === "/setnew-pwd" && method === "post") {
+	try {
     const cookies = parseCookies(req);
     const token = cookies.token;
     if (token) {
@@ -275,7 +280,10 @@ const router = async (req, res) => {
           res.end();
         } catch (err) {}
       });
-    }
+    }} catch {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+	  }
   } else if (path === "/pictures" && method === "get") {
     const parsedUrl = url.parse(req.url, true);
     const page = parseInt(parsedUrl.query.page) || 1;
@@ -347,10 +355,8 @@ const router = async (req, res) => {
         }
       }
     );
-  } else if (
-    path.match(/^\/like\/\w+$/) &&
-    (method === "post" || method === "delete")
-  ) {
+  } else if ( path.match(/^\/like\/\w+$/) && (method === "post" || method === "delete")) {
+	try {
     const pictureId = path.split("/")[2];
     const cookies = parseCookies(req);
     const token = cookies.token;
@@ -374,7 +380,12 @@ const router = async (req, res) => {
         res.end("Internal Server Error");
       }
     }
+	} catch {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+	}
   } else if (path.match(/^\/comment\/\w+$/) && method === "post") {
+	try {
 	  const pictureId = path.split("/")[2];
 	  const cookies = parseCookies(req);
 	  const token = cookies.token;
@@ -396,6 +407,10 @@ const router = async (req, res) => {
 			  res.end(JSON.stringify({ success: true, comment: newComment }));
 			});
 		}
+	} catch {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+	  }
   } else if (path === "/new-pic") {
     try {
 		const cookies = parseCookies(req);
@@ -418,7 +433,7 @@ const router = async (req, res) => {
 		res.end();
 	  }
   } else if (path === "/save-photo" && method === "post") {
-	console.log("here");
+	try {
 	const cookies = parseCookies(req);
 	const token = cookies.token;
 	if (token) {
@@ -447,7 +462,10 @@ const router = async (req, res) => {
             });
         });
 	  }
-	}
+	}} catch {
+		res.writeHead(302, { Location: "/login" });
+		res.end();
+	  }
 	} else if (path.match(/^\/delete-picture\/\w+$/)) {
 		const pictureId = path.split("/")[2];
 		const cookies = parseCookies(req);
@@ -460,7 +478,10 @@ const router = async (req, res) => {
 		  if (token) {
 			PictureController.deletePicture(req, res, pictureId);
 			res.end(JSON.stringify({ success: true}));
-		  }
+		  } else {
+			res.writeHead(302, { Location: "/login" });
+			res.end();
+		}
 	} else {
 		res.writeHead(302, { Location: "/login" });
 		res.end();
