@@ -543,6 +543,7 @@ form button {
 	position: relative;
 	left: 2%;
 	display: flex;
+	justify-content: space-between;
 	align-items: flex-start;
 	max-height: 480px;
 	height: 100%;
@@ -556,10 +557,11 @@ form button {
     position: relative;
 	max-width: 640px;
 	max-height: 480px;
-    margin: 0 auto;
+    margin: 0;
 }
 
 #video {
+	position: absolute;
     width: 100%;
     height: 100%;
     display: block;
@@ -570,8 +572,6 @@ form button {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
 	touch-action: none;
 }
 
@@ -584,6 +584,23 @@ form button {
     border: 1px solid #ccc;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: transparent; 
+}
+
+#stickers {
+	margin-left: 2px;
+	height: 90%;
+	width: 150px; 
+	overflow: visible;
+	overflow-y: auto; 
+	display: flex;
+	flex-direction: column;
+	z-index: 10;
+}
+
+#stickers img {
+	width: 100px;
+	cursor: pointer;
+	margin-bottom: 10px;
 }
 
 h7 {
@@ -615,22 +632,4 @@ h7 {
 	padding: 10px 20px;
 	font-size: 16px;
 	cursor: pointer;
-}
-
-#stickers {
-	left: 0;
-    margin-left: 2px;
-	height: 90%;
-	width: 150px; 
-	overflow: visible;
-    overflow-y: auto; 
-    display: flex;
-    flex-direction: column;
-	z-index: 10;
-}
-
-#stickers img {
-    width: 100px;
-    cursor: pointer;
-    margin-bottom: 10px;
 }

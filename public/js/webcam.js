@@ -6,6 +6,8 @@ const captureButton = document.getElementById('capture-button');
 const uploadButton = document.getElementById('upload-button');
 const contextBackground = canvasBackground.getContext('2d');
 const contextStickers = canvasStickers.getContext('2d');
+const Stickers = document.getElementById('stickers');
+
 
 let stickers = [];
 let selectedSticker = null;
@@ -19,9 +21,13 @@ navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         video.srcObject = stream;
     })
-    .catch(err => console.error("Error accessing webcam: ", err));
+    .catch(err => {
+        console.error("Error accessing webcam: ", err);
+        setCanvasDefaultSize();
+    });
 
 video.addEventListener('loadedmetadata', () => {
+    console.log('video loaded');
     canvasBackground.width = video.videoWidth;
     canvasBackground.height = video.videoHeight;
     canvasStickers.width = video.videoWidth;
@@ -30,6 +36,21 @@ video.addEventListener('loadedmetadata', () => {
         drawVideoOnCanvas(); 
     }
 });
+
+function setCanvasDefaultSize() {
+	console.log('Setting canvas to default size', video.videoWidth, video.videoHeight);
+    const container = document.getElementById('newPic-container');
+	console.log('container:', container.offsetWidth, Stickers.offsetWidth);
+    const containerWidth = container.offsetWidth - Stickers.offsetWidth;
+    const containerHeight = container.offsetHeight;
+
+    canvasBackground.width = containerWidth;
+    canvasBackground.height = containerHeight;
+    canvasStickers.width = containerWidth;
+    canvasStickers.height = containerHeight;
+
+    console.log('Canvases set to default size:', containerWidth, containerHeight);
+}
 
 
 function drawVideoOnCanvas() {
@@ -177,17 +198,16 @@ function savePhoto(imageDataURL) {
     .catch(error => console.error('Error:', error));
 }
 
-// Gérer les événements tactiles pour les stickers
+
 document.querySelectorAll('#stickers img').forEach(img => {
     img.addEventListener('touchstart', event => {
         event.preventDefault();
         const stickerSrc = event.target.src;
-        // Mémorise le sticker sélectionné
         selectedSticker = {
             image: new Image(),
             x: 0,
             y: 0,
-            width: 100, // Taille initiale par défaut
+            width: 100, 
             height: 100
         };
         selectedSticker.image.src = stickerSrc;
@@ -200,13 +220,12 @@ canvasStickers.addEventListener('touchstart', event => {
     const mouseX = touch.clientX - canvasStickers.getBoundingClientRect().left;
     const mouseY = touch.clientY - canvasStickers.getBoundingClientRect().top;
 
-    // Si un sticker est sélectionné, on le place sur le canevas
     if (selectedSticker) {
         selectedSticker.x = mouseX - selectedSticker.width / 2;
         selectedSticker.y = mouseY - selectedSticker.height / 2;
         stickers.push(selectedSticker);
         drawStickersOnCanvas();
-        selectedSticker = null; // Désélectionne le sticker après l'avoir placé
+        selectedSticker = null; 
     } else {
         stickers.forEach(sticker => {
             if (mouseX > sticker.x && mouseX < sticker.x + sticker.width &&

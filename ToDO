@@ -1,4 +1,1 @@
-The user should be able to delete his edited images, but only his, not other users’ creations.
-les stickers ne fonctionnent pas en responsive
-footer
-storer les images dans mongodb en u64
+faire un truc de redirction quand le token expire
