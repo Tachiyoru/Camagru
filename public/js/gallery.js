@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     gallery.innerHTML = "";
     images.forEach((image) => {
       const imgElement = document.createElement("img");
-      imgElement.src = image.path;
+      imgElement.src = `data:image/png;base64,${image.ImageData}`;
       imgElement.alt = image.pictureName;
       imgElement.classList.add("thumbnail");
       imgElement.onclick = () => {

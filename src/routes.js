@@ -136,24 +136,24 @@ const router = async (req, res) => {
       return;
     });
   } else if (path === "/homepage" && method === "get") {
-    const cookies = parseCookies(req);
-    const token = cookies.token;
-    if (token) {
-      const user = verifyToken(token);
-      if (user && user.user.confirmed === false) {
-        fs.readFile(
-          path2.join(__dirname, "../public/confirmation.html"),
-          (err, data) => {
-            if (err) {
-              res.writeHead(500, { "Content-Type": "text/plain" });
-              res.end("Internal Server Error");
-              return;
-            }
-            res.writeHead(200, { "Content-Type": "text/html" });
-            res.end(data);
-          }
-        );
-      } else if (user && user.user.confirmed === true) {
+	  const cookies = parseCookies(req);
+	  const token = cookies.token;
+	  if (token) {
+		  const user = verifyToken(token);
+		  if (user && user.user.confirmed === false) {
+			  fs.readFile(
+				  path2.join(__dirname, "../public/confirmation.html"),
+				  (err, data) => {
+					  if (err) {
+						  res.writeHead(500, { "Content-Type": "text/plain" });
+						  res.end("Internal Server Error");
+						  return;
+						}
+						res.writeHead(200, { "Content-Type": "text/html" });
+						res.end(data);
+					}
+				);
+			} else if (user && user.user.confirmed === true) {
         fs.readFile(
           path2.join(__dirname, "../public/Homepage.html"),
           (err, data) => {
@@ -179,6 +179,7 @@ const router = async (req, res) => {
             res.end(updatedData);
           }
         );
+	}
       } else {
 		fs.readFile(
 			path2.join(__dirname, "../public/VisitorHome.html"),
@@ -193,10 +194,6 @@ const router = async (req, res) => {
 			}
 		  );
       }
-    } else {
-        res.writeHead(302, { Location: "/login" });
-        res.end("Authentication failed");
-    }
   } else if (path.match(/^\/confirm\/\w+$/) && method === "get") {
     const token = path.split("/")[2];
     try {
@@ -313,11 +310,11 @@ const router = async (req, res) => {
             );
 			console.log(picture.picture.pictureName);
             const check = picture.picture.likedBy.includes(user.user.username);
-            const pictureHtml = data
+            let pictureHtml = data
               .toString()
               .replace(
                 "{{pictureUrl}}",
-                `/uploads/${picture.picture.pictureName}`
+                `data:image/png;base64,${picture.picture.ImageData}`
               )
               .replace("{{likesHtml}}", `${picture.picture.like}`)
               .replace(
@@ -338,6 +335,9 @@ const router = async (req, res) => {
                   .map((comment) => `<div class="comment"><strong>${comment[0]}:</strong> ${comment[1]}</div>`)
                   .join("")
               );
+			if (user.user.email === picture.picture.authorEmail) {
+				pictureHtml = pictureHtml.replace("{{deleteButton}}", `<button id="delete-button">Delete</button>`);
+			}
             res.writeHead(200, { "Content-Type": "text/html" });
             res.end(pictureHtml);
           }
@@ -432,7 +432,7 @@ const router = async (req, res) => {
 				const { image } = JSON.parse(body);
 				const base64Data = image.replace(/^data:image\/png;base64,/, '');
 				const fileName = `picture_${Date.now()}.jpg`;
-				const uploadDir = path2.join(__dirname, '../public/uploads');
+				const uploadDir = await path2.join(__dirname, '../public/uploads');
 
 				fs.writeFile(`${uploadDir}/${fileName}`, base64Data, 'base64', (err) => {
 					if (err) {
@@ -440,7 +440,7 @@ const router = async (req, res) => {
 						res.writeHead(500, { 'Content-Type': 'application/json' });
 						res.end(JSON.stringify({ success: false, message: err.message }));
 					} else {
-						PictureController.savePicture(user.user, fileName);
+						PictureController.savePicture(user.user, fileName, base64Data);
 						res.writeHead(200, { 'Content-Type': 'application/json'});
 						res.end(JSON.stringify({ success: true}));
                 }
@@ -448,6 +448,19 @@ const router = async (req, res) => {
         });
 	  }
 	}
+	} else if (path.match(/^\/delete-picture\/\w+$/)) {
+		const pictureId = path.split("/")[2];
+		const cookies = parseCookies(req);
+		const token = cookies.token;
+		if (!pictureId) {
+			res.writeHead(400, { "Content-Type": "application/json" });
+			res.end(JSON.stringify({ error: "Missing picture ID" }));
+			return;
+		  }
+		  if (token) {
+			PictureController.deletePicture(req, res, pictureId);
+			res.end(JSON.stringify({ success: true}));
+		  }
 	} else {
 		res.writeHead(302, { Location: "/login" });
 		res.end();

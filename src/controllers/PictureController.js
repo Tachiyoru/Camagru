@@ -17,19 +17,20 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+const fs = require("fs").promises;
 
-const savePicture = async (user, filename, res) => {
-  try {
-    const picture = new Picture({
+const savePicture = async (user, filename, base64Data) => {
+	try {
+	const picture = new Picture({
       authorEmail: user.email,
       pictureName: filename,
       path: `/uploads/${filename}`,
+	  ImageData: base64Data,
     });
     console.log(picture);
     await picture.save();
   } catch (err) {
     console.log("in create pic : ", err);
-    res.writeHead(500);
     JSON.stringify({ message: "Internal Server Error" });
   }
 };
@@ -49,7 +50,7 @@ const getPictureById = async (req, res) => {
 };
 
 const getAllPictures = async (req, res) => {
-  try {
+	try {
     const pictures = await Picture.find();
     return pictures;
   } catch (err) {
@@ -153,56 +154,62 @@ const addComment = async (req, res, pictureId, user, text) => {
 };
 
 const deletePicture = async (req, res, pictureId) => {
-  try {
-    const picture = await Picture.findById(pictureId);
-    if (!picture) {
-    res.writeHead(404, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Picture not found" }));
-    return;
-    }
-    await picture.remove();
-    res.writeHead(200, { "Content-Type": "application/json" });
-    return 1;
-  } catch (err) {
-    res.writeHead(500, { "Content-Type": "application/json" });
-    res.end(JSON.stringify({ error: "Internal Server Error" }));
-  }
+	try {
+		console.log(pictureId);
+		const picture = await Picture.findById(pictureId);
+		if (!picture) {
+			res.writeHead(404, { "Content-Type": "application/json" });
+			res.end(JSON.stringify({ error: "Picture not found" }));
+			return;
+		}
+		await Picture.findByIdAndDelete(pictureId);
+		res.writeHead(200, { "Content-Type": "application/json" });
+		return 1;
+	} catch (err) {
+		res.writeHead(500, { "Content-Type": "application/json" });
+		res.end(JSON.stringify({ error: "Internal Server Error" }));
+	}
 };
 
-// const createtest = async (req, res) => {
-//   try {
-//     let picture = new Picture({
-//         pictureName: "e",
-//         authorEmail: "shanley@hotmail.fr",
-//         path: "/uploads/e.jpg",
-//     });
-//     picture.save();
-//     let picture2 = new Picture({
-//         pictureName: "f",
-//         authorEmail: "shanley@hotmail.fr",
-//         path: "/uploads/f.jpg",
-//     });
-//     picture2.save();
-//     let picture3 = new Picture({
-//         pictureName: "c",
-//         authorEmail: "shanley@hotmail.fr",
-//         path: "/uploads/c.jpg",
-//     });
-//     picture3.save();
-//     let picture4 = new Picture({
-//         pictureName: "d",
-//         authorEmail: "shanley@hotmail.fr",
-//         path: "/uploads/d.jpg",
-//     });
-//     picture4.save();
-//     console.log(picture, "picture created successfully!");
-//     res.writeHead(201).json(picture);
-//   } catch (err) {
-//     console.log(err.message);
-//     res.writeHead(500, { "Content-Type": "text/plain" });
-//     res.end(JSON.stringify({ message: "Internal Server Error" }));
-//   }
-// };
+const createtest = async (req, res) => {
+	  try {
+		let imageBuffer = await fs.readFile("/uploads/a.jpg");
+		let imageB64 = imageBuffer.toString('base64');
+		const fileName = `picture_${Date.now()}.jpg`;
+		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
+		let picture = new Picture({
+				pictureName: `picture_${Date.now()}.jpg`,
+				authorEmail: "shanley@hotmail.fr",
+				path: "/uploads/e.jpg",
+				ImageData: imageB64,
+			});
+		picture.save();
+		imageBuffer = await fs.readFile("/uploads/b.jpg");
+		imageB64 = imageBuffer.toString('base64');
+		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
+		let picture2 = new Picture({
+				pictureName: `picture_${Date.now()}.jpg`,
+				authorEmail: "shanley@hotmail.fr",
+				ImageData: imageB64,
+			});
+		picture2.save();
+		imageBuffer = await fs.readFile("/uploads/c.jpg");
+		imageB64 = imageBuffer.toString('base64');
+		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
+		let picture3 = new Picture({
+				pictureName: `picture_${Date.now()}.jpg`,
+				authorEmail: "shanley@hotmail.fr",
+				ImageData: imageB64,
+			});
+		picture3.save();
+    console.log(picture, "picture created successfully!");
+    res.writeHead(201).json(picture);
+  } catch (err) {
+    console.log(err.message);
+    res.writeHead(500, { "Content-Type": "text/plain" });
+    res.end(JSON.stringify({ message: "Internal Server Error" }));
+  }
+};
 
 module.exports = {
   savePicture,

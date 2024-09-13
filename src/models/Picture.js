@@ -11,10 +11,9 @@ const pictureSchema = new Schema({
     type: String,
     required: true,
   },
-  path: {
-    type: String,
-    required: true,
-    unique: true
+  ImageData: {
+	type: String,
+	required: true
   },
   like: {
     type: Number,
