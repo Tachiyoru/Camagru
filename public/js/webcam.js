@@ -12,9 +12,9 @@ let selectedSticker = null;
 let offsetX = 0;
 let offsetY = 0;
 let isResizing = false;
-let isImageUploaded = false; // Nouvelle variable pour vérifier si une image est téléchargée
+let isImageUploaded = false; 
 
-// Accéder à la webcam
+
 navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
         video.srcObject = stream;
@@ -26,22 +26,22 @@ video.addEventListener('loadedmetadata', () => {
     canvasBackground.height = video.videoHeight;
     canvasStickers.width = video.videoWidth;
     canvasStickers.height = video.videoHeight;
-    if (!isImageUploaded) { // N'affiche la vidéo que si aucune image n'est téléchargée
-        drawVideoOnCanvas(); // Commence à dessiner la vidéo en temps réel sur le canvas de fond
+    if (!isImageUploaded) { 
+        drawVideoOnCanvas(); 
     }
 });
 
-// Dessiner la vidéo sur le canvas de fond
+
 function drawVideoOnCanvas() {
-    if (!isImageUploaded) { // Continue à dessiner la vidéo uniquement si aucune image n'est téléchargée
+    if (!isImageUploaded) { 
         contextBackground.drawImage(video, 0, 0, canvasBackground.width, canvasBackground.height);
-        requestAnimationFrame(drawVideoOnCanvas); // Continue à dessiner la vidéo en temps réel
+        requestAnimationFrame(drawVideoOnCanvas); 
     }
 }
 
-// Gestion du téléchargement d'image
+
 uploadButton.addEventListener('click', () => {
-    uploadImageInput.click(); // Déclenche l'input de type file
+    uploadImageInput.click(); 
 });
 
 uploadImageInput.addEventListener('change', event => {
@@ -51,11 +51,11 @@ uploadImageInput.addEventListener('change', event => {
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
-                isImageUploaded = true; // Marque qu'une image est téléchargée
-                contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height); // Efface le canvas de fond
-                contextBackground.drawImage(img, 0, 0, canvasBackground.width, canvasBackground.height); // Dessine l'image
-                video.pause(); // Arrête la vidéo de la webcam
-                // video.style.display = 'none'; // Masque la vidéo de la webcam
+                isImageUploaded = true; 
+                contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height); 
+                contextBackground.drawImage(img, 0, 0, canvasBackground.width, canvasBackground.height); 
+                video.pause(); 
+                
             };
             img.src = e.target.result;
         };
@@ -63,16 +63,16 @@ uploadImageInput.addEventListener('change', event => {
     }
 });
 
-// Réinitialiser l'image téléchargée et réafficher la webcam
+
 function resetToWebcam() {
     isImageUploaded = false;
     contextBackground.clearRect(0, 0, canvasBackground.width, canvasBackground.height);
     video.play();
-    video.style.display = 'block'; // Affiche la vidéo de la webcam
-    drawVideoOnCanvas(); // Recommence à dessiner la vidéo
+    video.style.display = 'block'; 
+    drawVideoOnCanvas(); 
 }
 
-// Le reste du code reste inchangé pour gérer le drag-and-drop des stickers
+
 document.querySelectorAll('#stickers img').forEach(img => {
     img.addEventListener('dragstart', event => {
         event.dataTransfer.setData('text/plain', event.target.src);
@@ -97,7 +97,7 @@ canvasStickers.addEventListener('drop', event => {
             height: img.height,
         };
         stickers.push(sticker);
-        drawStickersOnCanvas(); // Redessine les stickers sur le canvas transparent
+        drawStickersOnCanvas(); 
     };
 });
 
@@ -152,7 +152,7 @@ captureButton.addEventListener('click', () => {
     finalCanvas.height = canvasBackground.height;
     const finalContext = finalCanvas.getContext('2d');
 
-    // Combine l'image de fond et les stickers
+    
     finalContext.drawImage(canvasBackground, 0, 0);
     finalContext.drawImage(canvasStickers, 0, 0);
 
@@ -176,3 +176,73 @@ function savePhoto(imageDataURL) {
     })
     .catch(error => console.error('Error:', error));
 }
+
+// Gérer les événements tactiles pour les stickers
+document.querySelectorAll('#stickers img').forEach(img => {
+    img.addEventListener('touchstart', event => {
+        event.preventDefault();
+        const stickerSrc = event.target.src;
+        // Mémorise le sticker sélectionné
+        selectedSticker = {
+            image: new Image(),
+            x: 0,
+            y: 0,
+            width: 100, // Taille initiale par défaut
+            height: 100
+        };
+        selectedSticker.image.src = stickerSrc;
+    });
+});
+
+canvasStickers.addEventListener('touchstart', event => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const mouseX = touch.clientX - canvasStickers.getBoundingClientRect().left;
+    const mouseY = touch.clientY - canvasStickers.getBoundingClientRect().top;
+
+    // Si un sticker est sélectionné, on le place sur le canevas
+    if (selectedSticker) {
+        selectedSticker.x = mouseX - selectedSticker.width / 2;
+        selectedSticker.y = mouseY - selectedSticker.height / 2;
+        stickers.push(selectedSticker);
+        drawStickersOnCanvas();
+        selectedSticker = null; // Désélectionne le sticker après l'avoir placé
+    } else {
+        stickers.forEach(sticker => {
+            if (mouseX > sticker.x && mouseX < sticker.x + sticker.width &&
+                mouseY > sticker.y && mouseY < sticker.y + sticker.height) {
+                selectedSticker = sticker;
+                offsetX = mouseX - sticker.x;
+                offsetY = mouseY - sticker.y;
+                if (mouseX > sticker.x + sticker.width - 10 && mouseY > sticker.y + sticker.height - 10) {
+                    isResizing = true;
+                } else {
+                    isResizing = false;
+                }
+            }
+        });
+    }
+});
+
+canvasStickers.addEventListener('touchmove', event => {
+    event.preventDefault();
+    if (selectedSticker) {
+        const touch = event.touches[0];
+        const mouseX = touch.clientX - canvasStickers.getBoundingClientRect().left;
+        const mouseY = touch.clientY - canvasStickers.getBoundingClientRect().top;
+
+        if (isResizing) {
+            selectedSticker.width = mouseX - selectedSticker.x;
+            selectedSticker.height = mouseY - selectedSticker.y;
+        } else {
+            selectedSticker.x = mouseX - offsetX;
+            selectedSticker.y = mouseY - offsetY;
+        }
+        drawStickersOnCanvas();
+    }
+});
+
+canvasStickers.addEventListener('touchend', () => {
+    selectedSticker = null;
+    isResizing = false;
+});
