@@ -113,7 +113,7 @@ const update = async (user, req, res) => {
     await user2.save();
     return user2;
   } catch (err) {
-    res.writeHead(500, { "Content-Type": "text/plain" });
+	return null
   }
 };
 

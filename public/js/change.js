@@ -59,7 +59,6 @@ document
         window.location.reload();
       })
       .catch((error) => {
-        console.error(error);
-        alert("An error occurred while updating user information.");
+        alert(error);
       });
   });

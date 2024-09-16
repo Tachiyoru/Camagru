@@ -35,11 +35,22 @@
 		<button id="capture-button">Save picture</button>
 		<input type="file" id="upload-image" accept="image/*" style="display: none;" />
 		<button id="upload-button">Upload a pic</button>
-		<form id="logout-form" class="logout-form">
-			<button type="submit" id="logout-button">SIGN OUT</button>
+		<form id="previous-form" class="previous-form">
+			<button type="submit" id="previous-button">All my pictures</button>
 		</form>
+		<div id="modal-oldpic" class="modal2">
+			<div class="modal-oldpic-content">
+				<span class="close-button">&times;</span>
+				<h3>Your pictures</h3>
+				<div id="old-pics"></div>
+			</div>
+		</div>
 	</main>
 </body>
+<form id="logout-form" class="logout-form">
+	<button type="submit" id="logout-button">SIGN OUT</button>
+</form>
+<script src="js/oldpic.js"></script>
 <script src="js/webcam.js"></script>
 <script src="js/logout.js"></script>
 <footer>

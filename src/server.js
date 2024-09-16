@@ -33,13 +33,13 @@ const requestHandler = (req, res) => {
         res.end(data);
       }
     );
-  } else if (url === "/login") {
+	} else if (url.match(/^\/login(\?.*)?$/)) {
     fs.readFile(path.join(__dirname, "../public/login.html"), (err, data) => {
-      if (err) {
-        res.writeHead(500, { "Content-Type": "text/plain" });
-        res.end("Internal Server Error");
-        return;
-      }
+		if (err) {
+			res.writeHead(500, { "Content-Type": "text/plain" });
+			res.end("Internal Server Error");
+			return;
+		}
       res.writeHead(200, { "Content-Type": "text/html" });
       res.end(data);
     });

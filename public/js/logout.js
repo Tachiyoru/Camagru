@@ -1,15 +1,16 @@
-document.getElementById("logout-form").addEventListener("submit", function (event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    fetch("/logout", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(formData),
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error("could not logout");
-      }
-      window.location.href = "/login";
-    });
-  });
-  
+document.addEventListener('DOMContentLoaded', () => {
+	document.getElementById("logout-form").addEventListener("submit", function (event) {
+		event.preventDefault();
+		const formData = new FormData(event.target);
+		fetch("/logout", {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		body: new URLSearchParams(formData),
+		}).then((response) => {
+		if (!response.ok) {
+			throw new Error("could not logout");
+		}
+		window.location.href = "/login";
+		});
+	});
+});

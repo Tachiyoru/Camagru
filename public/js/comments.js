@@ -4,10 +4,24 @@ document.addEventListener("DOMContentLoaded", () => {
 	const commentsList = document.getElementById("comments-list");
 	const pictureId = new URLSearchParams(window.location.search).get("id");
   
+	function escapeHtml(text) {
+		const map = {
+		  '&': '&amp;',
+		  '<': '&lt;',
+		  '>': '&gt;',
+		  '"': '&quot;',
+		  "'": '&#039;',
+		};
+		return text.replace(/[&<>"']/g, function (m) { return map[m]; });
+	  }
+	  
+
 	const addComment = () => {
 	  const commentText = newCommentInput.value.trim();
 	  if (!commentText) return;
-  
+	//   if (commentText.length > 500 || /[<>]/.test(commentText)) {
+	// 	return alert("Invalid comment");
+	//   }
 	  fetch(`/comment/${pictureId}`, {
 		method: "POST",
 		headers: {
@@ -23,7 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		})
 		.then((data) => {
 		  if (data.success) {
-			const newCommentHtml = `<div class="comment"><strong>${data.comment.author}:</strong> ${data.comment.text}</div>`;
+			const escapedComment = escapeHtml(data.comment.text);
+			const escapedAuthor = escapeHtml(data.comment.author);
+			console.log(escapedComment);
+			const newCommentHtml = `<div class="comment"><strong>${escapedAuthor}:</strong> ${escapedComment}</div>`;
 			commentsList.insertAdjacentHTML('beforeend', newCommentHtml);
 			newCommentInput.value = "";
 		  } else {

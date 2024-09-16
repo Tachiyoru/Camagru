@@ -320,18 +320,8 @@ input {
   border: none;
   cursor: pointer;
   font-size: 14px;
+  z-index: 1001;
 }
-
-#logout-button2 {
-	position: absolute;
-	top: 10%;
-	left: 10px;
-	background: rgb(245, 0, 0);
-	color: white;
-	border: none;
-	cursor: pointer;
-	font-size: 14px;
-  }
 
 .for-register {
   display: block;
@@ -555,6 +545,8 @@ form button {
 
 #camera {
     position: relative;
+	width: 100%;
+    height: 100%;
 	max-width: 640px;
 	max-height: 480px;
     margin: 0;
@@ -572,6 +564,8 @@ form button {
     position: absolute;
     top: 0;
     left: 0;
+	width: 100%;
+    height: 100%;
 	touch-action: none;
 }
 
@@ -633,3 +627,55 @@ h7 {
 	font-size: 16px;
 	cursor: pointer;
 }
+
+
+/* Styles pour les modals de check previous pic*/
+
+#previous-button {
+	position: absolute;
+	top: 55px;
+	left: 18px;
+	background: rgb(105, 218, 127);
+	color: white;
+	border: none;
+	cursor: pointer;
+	font-size: 14px;
+	border-radius: 10px;
+	display: none;
+  }
+
+  #modal-oldpic {
+	display: none;
+	position: fixed;
+	top: 100px;
+	left: 10px;
+	width: 250px;
+	background-color: #352626;
+	border: 1px solid #ccc;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	z-index: 1000;
+  }
+  
+  #modal-oldpic-content {
+	padding: 20px;
+  }
+
+  #old-pics {
+	display: flex;
+	margin-left: 2px;
+	width: 250px;
+	height: 200px;
+	overflow: auto;
+	overflow-y: auto; 
+	display: flex;
+	flex-direction: column;
+  }
+
+  .thumbnail2 {
+	margin-left: 25px;
+	margin-bottom: 5px;
+	width: 200px;
+	height: 200px;
+	object-fit: contain; 
+	border: 1px solid #ccc;
+  }

@@ -47,6 +47,17 @@ const router = async (req, res) => {
     }, {});
   };
 
+  function escapeHtml(text) {
+	const map = {
+	  '&': '&amp;',
+	  '<': '&lt;',
+	  '>': '&gt;',
+	  '"': '&quot;',
+	  "'": '&#039;',
+	};
+	return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+  }
+
   if (path === "/users" && method === "get") {
     await UserController.index(req, res);
   } else if (path.match(/^\/users\/\w+$/) && method === "get") {
@@ -69,7 +80,7 @@ const router = async (req, res) => {
           return;
         }
         const token = generateToken(user);
-        res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/`);
+        res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/`);
         res.writeHead(201, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "User registered successfully" }));
       } catch (err) {
@@ -93,12 +104,18 @@ const router = async (req, res) => {
         const user = verifyToken(token);
         if (user && user.user.confirmed === true) {
           const user2 = await UserController.update(user, req, res);
+		  if (!user2) {
+			res.writeHead(300, { "Content-Type": "application/json" });
+			res.end(JSON.stringify({ message: "Username or Email already exists" }));
+			return;
+		  }
           const token = generateToken(user2);
-          res.setHeader("Set-Cookie", `token=; HttpOnly; Path=/`);
-          res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/`);
+          res.setHeader("Set-Cookie", `token=; HttpOnly; Secure; SameSite=Strict; Path=/`);
+          res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/`);
           res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ message: "User registered successfully" }));
         } else {
+			console.log("User not confirmed");
           res.writeHead(401, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ message: "User not confirmed" }));
         }
@@ -112,7 +129,7 @@ const router = async (req, res) => {
     req.params = { id: path.split("/")[2] };
     await UserController.destroy(req, res);
   } else if (path === "/logout" && method === "post") {
-    res.setHeader("Set-Cookie", `token=/; HttpOnly; Path=/`);
+    res.setHeader("Set-Cookie", `token=/; HttpOnly; Secure; SameSite=Strict; Path=/`);
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ message: "Logged out successfully" }));
   } else if (path === "/log-in" && method === "post") {
@@ -130,7 +147,7 @@ const router = async (req, res) => {
           return;
         }
         const token = generateToken(user);
-        res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/`);
+        res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/`);
         res.writeHead(201, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ message: "Login successful" }));
       } catch (err) {
@@ -144,6 +161,7 @@ const router = async (req, res) => {
 	  const token = cookies.token;
 	  if (token) {
 		  const user = verifyToken(token);
+		  console.log(user);
 		  if (!user) {
 			fs.readFile(
 				path2.join(__dirname, "../public/VisitorHome.html"),
@@ -158,7 +176,7 @@ const router = async (req, res) => {
 				}
 			  );
 		  }
-		  if (user && user.user.confirmed === false) {
+		  else if (user && user.user.confirmed === false) {
 			  fs.readFile(
 				  path2.join(__dirname, "../public/confirmation.html"),
 				  (err, data) => {
@@ -219,8 +237,8 @@ const router = async (req, res) => {
       res.writeHead(302, { Location: "/login" });
       res.end();
     } catch {
-      res.writeHead(400, { "Content-Type": "text/plain" });
-      res.end("Invalid token");
+		res.writeHead(302, { Location: "/login?alert=1" });
+		res.end();
     }
   } else if (path === "/forgot" && method === "get") {
     fs.readFile(path2.join(__dirname, "../public/forgot.html"), (err, data) => {
@@ -260,7 +278,7 @@ const router = async (req, res) => {
           fs.readFile(
             path2.join(__dirname, "../public/new_pwd.html"),
             (err, data) => {
-              res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/`);
+              res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/`);
               res.writeHead(200, { "Content-Type": "text/html" });
               res.end(data);
             }
@@ -351,13 +369,16 @@ const router = async (req, res) => {
               </script>`
               )
               .replace(
-                "{{commentsHtml}}",
-                picture.comments
-                  .map((comment) => `<div class="comment"><strong>${comment[0]}:</strong> ${comment[1]}</div>`)
-                  .join("")
+				"{{commentsHtml}}",
+				picture.comments
+				  .map((comment) => 
+					`<div class="comment"><strong>${escapeHtml(comment[0])}:</strong> ${escapeHtml(comment[1])}</div>`)
+				  .join("")
               );
 			if (user.user.email === picture.picture.authorEmail) {
 				pictureHtml = pictureHtml.replace("{{deleteButton}}", `<button id="delete-button">Delete</button>`);
+			} else {
+				pictureHtml = pictureHtml.replace("{{deleteButton}}", '');
 			}
             res.writeHead(200, { "Content-Type": "text/html" });
             res.end(pictureHtml);
@@ -434,7 +455,7 @@ const router = async (req, res) => {
 			fs.readFile(
 			  path2.join(__dirname, "../public/new_pic.html"),
 			  (err, data) => {
-				res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Path=/`);
+				res.setHeader("Set-Cookie", `token=${token}; HttpOnly; Secure; SameSite=Strict; Path=/`);
 				res.writeHead(200, { "Content-Type": "text/html" });
 				res.end(data);
 			  }
@@ -462,12 +483,12 @@ const router = async (req, res) => {
 				const fileName = `picture_${Date.now()}.jpg`;
 				const uploadDir = await path2.join(__dirname, '../public/uploads');
 
-				fs.writeFile(`${uploadDir}/${fileName}`, base64Data, 'base64', (err) => {
+				await fs.writeFile(`${uploadDir}/${fileName}`, base64Data, 'base64', (err) => {
 					if (err) {
 						res.writeHead(500, { 'Content-Type': 'application/json' });
 						res.end(JSON.stringify({ success: false, message: err.message }));
 					} else {
-						PictureController.savePicture(user.user, fileName, base64Data);
+					    PictureController.savePicture(user.user, fileName, base64Data);
 						res.writeHead(200, { 'Content-Type': 'application/json'});
 						res.end(JSON.stringify({ success: true}));
                 }
@@ -494,6 +515,21 @@ const router = async (req, res) => {
 			res.writeHead(302, { Location: "/login" });
 			res.end();
 		}
+	} else if (path === "/mypictures") {
+		try {
+			const cookies = parseCookies(req);
+			const token = cookies.token;
+			if (token) {
+				const user = verifyToken(token);
+				if (user) {
+					const pictures = await PictureController.getUserPictures(req, res, user.user);
+				res.writeHead(200, { "Content-Type": "application/json" });
+				res.end(JSON.stringify(pictures));
+			}
+		}} catch {
+			res.writeHead(302, { Location: "/login" });
+			res.end();
+		  }
 	} else {
 		res.writeHead(302, { Location: "/login" });
 		res.end();

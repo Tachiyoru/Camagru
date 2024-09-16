@@ -17,7 +17,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-const fs = require("fs").promises;
 
 const savePicture = async (user, filename, base64Data) => {
 	try {
@@ -168,43 +167,53 @@ const deletePicture = async (req, res, pictureId) => {
 	}
 };
 
-const createtest = async (req, res) => {
-	  try {
-		let imageBuffer = await fs.readFile("/uploads/a.jpg");
-		let imageB64 = imageBuffer.toString('base64');
-		const fileName = `picture_${Date.now()}.jpg`;
-		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
-		let picture = new Picture({
-				pictureName: `picture_${Date.now()}.jpg`,
-				authorEmail: "shanley@hotmail.fr",
-				path: "/uploads/e.jpg",
-				ImageData: imageB64,
-			});
-		picture.save();
-		imageBuffer = await fs.readFile("/uploads/b.jpg");
-		imageB64 = imageBuffer.toString('base64');
-		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
-		let picture2 = new Picture({
-				pictureName: `picture_${Date.now()}.jpg`,
-				authorEmail: "shanley@hotmail.fr",
-				ImageData: imageB64,
-			});
-		picture2.save();
-		imageBuffer = await fs.readFile("/uploads/c.jpg");
-		imageB64 = imageBuffer.toString('base64');
-		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
-		let picture3 = new Picture({
-				pictureName: `picture_${Date.now()}.jpg`,
-				authorEmail: "shanley@hotmail.fr",
-				ImageData: imageB64,
-			});
-		picture3.save();
-    res.writeHead(201).json(picture);
-  } catch (err) {
-    res.writeHead(500, { "Content-Type": "text/plain" });
-    res.end(JSON.stringify({ message: "Internal Server Error" }));
-  }
-};
+const getUserPictures = async (req, res, user) => {
+	try {
+		const pictures = await Picture.find({ authorEmail: user.email });
+		return pictures;
+	} catch (err) {
+		res.writeHead(500, { "Content-Type": "application/json" });
+		res.end(JSON.stringify({ error: "Internal Server Error" }));
+	}
+}
+
+// const createtest = async (req, res) => {
+// 	  try {
+// 		let imageBuffer = await fs.readFile("/uploads/a.jpg");
+// 		let imageB64 = imageBuffer.toString('base64');
+// 		const fileName = `picture_${Date.now()}.jpg`;
+// 		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
+// 		let picture = new Picture({
+// 				pictureName: `picture_${Date.now()}.jpg`,
+// 				authorEmail: "shanley@hotmail.fr",
+// 				path: "/uploads/e.jpg",
+// 				ImageData: imageB64,
+// 			});
+// 		picture.save();
+// 		imageBuffer = await fs.readFile("/uploads/b.jpg");
+// 		imageB64 = imageBuffer.toString('base64');
+// 		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
+// 		let picture2 = new Picture({
+// 				pictureName: `picture_${Date.now()}.jpg`,
+// 				authorEmail: "shanley@hotmail.fr",
+// 				ImageData: imageB64,
+// 			});
+// 		picture2.save();
+// 		imageBuffer = await fs.readFile("/uploads/c.jpg");
+// 		imageB64 = imageBuffer.toString('base64');
+// 		imageB64 = imageB64.replace(/^data:image\/png;base64,/, '');
+// 		let picture3 = new Picture({
+// 				pictureName: `picture_${Date.now()}.jpg`,
+// 				authorEmail: "shanley@hotmail.fr",
+// 				ImageData: imageB64,
+// 			});
+// 		picture3.save();
+//     res.writeHead(201).json(picture);
+//   } catch (err) {
+//     res.writeHead(500, { "Content-Type": "text/plain" });
+//     res.end(JSON.stringify({ message: "Internal Server Error" }));
+//   }
+// };
 
 module.exports = {
   savePicture,
@@ -216,5 +225,6 @@ module.exports = {
   likePicture,
   addComment,
   deletePicture,
+  getUserPictures,
   // createtest,
 };
