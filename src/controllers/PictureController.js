@@ -1,8 +1,6 @@
 const Picture = require("../models/Picture");
 const multer = require("multer");
-const { default: test } = require("node:test");
 const path = require("path");
-const { text } = require("stream/consumers");
 const likor = require("../components/likor");
 const commentator = require("../components/commentator");
 const UserRef = require("../models/User");

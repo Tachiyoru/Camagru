@@ -1,6 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-	const newCommentInput = document.getElementById("new_comment");
-	const commentsList = document.getElementById("comments-list");
 	const pictureId = new URLSearchParams(window.location.search).get("id");
   
 	const attachLikeListener = () => {

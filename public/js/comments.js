@@ -19,9 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	const addComment = () => {
 	  const commentText = newCommentInput.value.trim();
 	  if (!commentText) return;
-	//   if (commentText.length > 500 || /[<>]/.test(commentText)) {
-	// 	return alert("Invalid comment");
-	//   }
 	  fetch(`/comment/${pictureId}`, {
 		method: "POST",
 		headers: {

@@ -161,7 +161,6 @@ const router = async (req, res) => {
 	  const token = cookies.token;
 	  if (token) {
 		  const user = verifyToken(token);
-		  console.log(user);
 		  if (!user) {
 			fs.readFile(
 				path2.join(__dirname, "../public/VisitorHome.html"),
