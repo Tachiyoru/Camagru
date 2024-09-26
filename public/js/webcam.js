@@ -15,6 +15,9 @@ let offsetY = 0;
 let isResizing = false;
 let isImageUploaded = false; 
 
+if (stickers.length === 0) {
+	document.getElementById('capture-button').disabled = true;
+}
 
 navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
@@ -112,6 +115,7 @@ canvasStickers.addEventListener('drop', event => {
             height: img.height,
         };
         stickers.push(sticker);
+		document.getElementById('capture-button').disabled = false;
         drawStickersOnCanvas(); 
     };
 });
@@ -187,8 +191,14 @@ function savePhoto(imageDataURL) {
         if (!response.ok) {
             throw new Error('Failed to save photo');
         }
-        window.location.href = '/homepage';
-    })
+        document.getElementById("loading-screen").classList.add("active");
+	})	
+	.then((data) => {
+			setTimeout(() => {
+				document.getElementById("loading-screen").classList.remove("active");
+				window.location.href = "/homepage";
+			}, 1000);
+		})
     .catch(error => console.error('Error:', error));
 }
 
@@ -218,6 +228,7 @@ canvasStickers.addEventListener('touchstart', event => {
         selectedSticker.x = mouseX - selectedSticker.width / 2;
         selectedSticker.y = mouseY - selectedSticker.height / 2;
         stickers.push(selectedSticker);
+		document.getElementById('capture-button').disabled = false;
         drawStickersOnCanvas();
         selectedSticker = null; 
     } else {

@@ -492,6 +492,14 @@ const router = async (req, res) => {
 						res.end(JSON.stringify({ success: true}));
                 }
             });
+			fs.unlink(`${uploadDir}/${fileName}`, (err) => {
+				if (err) {
+					console.error("Erreur lors de la suppression du fichier : ", err);
+					res.writeHead(500, { "Content-Type": "application/json" });
+					res.end(JSON.stringify({ error: "Failed to delete image file" }));
+					return;
+				}
+			});
         });
 	  }
 	}} catch {
